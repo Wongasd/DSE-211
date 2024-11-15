@@ -1,14 +1,12 @@
 <?php 
 include_once("database/db.php");
-
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<title>Index</title>
+	<title>BookSaw - Free Book Store HTML CSS Template</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,24 +52,27 @@ include_once("database/db.php");
 						</div><!--social-links-->
 					</div>
 					<div class="col-md-6">
-    <div class="right-element">
-        <a href="<?php echo isset($_SESSION['user_id']) ? 'users.php' : 'register.php'; ?>" class="user-account for-buy">
-            <i class="icon icon-user"></i><span>Account</span>
-        </a>
+						<div class="right-element">
+							<a href="users.php" class="user-account for-buy"><i
+									class="icon icon-user"></i><span>Account</span></a>
+							<a href="#" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0
+									$)</span></a>
 
-        <div class="action-menu">
-            <div class="search-bar">
-                <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-                    <i class="icon icon-search"></i>
-                </a>
-                <form role="search" method="get" class="search-box">
-                    <input class="search-field text search-input" placeholder="Search" type="search">
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+							<div class="action-menu">
 
+								<div class="search-bar">
+									<a href="#" class="search-button search-toggle" data-selector="#header-wrap">
+										<i class="icon icon-search"></i>
+									</a>
+									<form role="search" method="get" class="search-box">
+										<input class="search-field text search-input" placeholder="Search"
+											type="search">
+									</form>
+								</div>
+							</div>
+
+						</div><!--top-right-->
+					</div>
 
 				</div>
 			</div>

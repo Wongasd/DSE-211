@@ -1,94 +1,121 @@
 <?php 
 include_once("database/db.php");
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+
+    $Email = trim($_POST['Email']);
+    $Password = trim($_POST['Password']);
+
+    // Prepare the statement to prevent SQL injection
+    $stmt = $conn->prepare("SELECT * FROM users WHERE Email = ?");
+    $stmt->bind_param("s", $Email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+
+        // Verify the entered password with the stored hashed password
+        if (password_verify($Password, $user['Password'])) {
+            // Set session variables upon successful login
+            $_SESSION['UserId'] = $user['UserId'];
+            $_SESSION['Email'] = $user['Email'];
+            $_SESSION['Permission'] = $user['Permission'];
+
+            // Redirect based on user permission
+            if ($user['Permission'] == "admin") {
+                echo "<script>alert('Login as admin'); window.location.href='index.php';</script>";
+            } else {
+                echo "<script>alert('Login successful'); window.location.href='index.php';</script>";
+            }
+        } else {
+            echo "<script>alert('Incorrect password, please try again');</script>";
+        }
+    } else {
+        echo "<script>alert('No account found with that email');</script>";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
 ?>
+
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign Up Your Account Here!</title>
 
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src='https://kit.fontawesome.com/a076d05399.js'></script>
-        <title>Sign In</title>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/form-elements.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+</head>
 
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
-		<link rel="stylesheet" href="assets/css/form-elements.css">
-        <link rel="stylesheet" href="assets/css/style.css">
+<body>
 
+    <div class="top-content">
+        <div class="inner-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2 text">
+                        <h1>Sign Up Now!</h1>
+                    </div>
+                </div>
 
-        <link rel="shortcut icon" href="assets/ico/favicon.png">
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <div class="form-box">
+                            <div class="form-bottom">
+                                <form role="form" action="login.php" method="post" class="registration-form">
 
-    </head>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="Email">Email</label>
+                                        <input type="text" name="Email" placeholder="Enter Your Email..." class="form-email form-control" id="Email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="Password">Password</label>
+                                        <input type="text" name="Password" placeholder="Enter Your Password..." class="form-password form-control" id="Password" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='register.php'">Sign up</button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-    <body>
-
-
-        <div class="top-content">
-        	
-            <div class="inner-bg">
-                <div class="container">
-                	
-                    <div class="row">
-                        <div class="col-sm-8 col-sm-offset-2 text">
-                            <h1>Login</h1>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    
-                        <div class="col-sm-6 col-sm-offset-3">
-                        	
-                        	<div class="form-box">
+                </div>
+            </div>
+        </div>
+    </div>
 
-	                            <div class="form-bottom">
-				                    <form role="form" action="" method="post" class="login-form">
-				                    	<div class="form-group">
-				                    		<label class="sr-only" for="Email">Email</label>
-				                        	<input type="text" name="Email" placeholder="Email..." class="form-username form-control" id="Email">
-				                        </div>
-				                        <div class="form-group">
-				                        	<label class="sr-only" for="form-password">Password</label>
-				                        	<input type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password">
-				                        </div>
-				                        <button type="submit" class="btn">Sign in!</button>
-				                    </form>
-			                    </div>
-		                    </div>
-	                        
-                        </div>
-                        
-                    
+    <script src="assets/js/jquery-1.11.1.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.backstretch.min.js"></script>
+    <script src="assets/js/scripts.js"></script>
 
-
-        <footer>
-        	<div class="container">
-        		<div class="row">
-        			
-        			<div class="col-sm-8 col-sm-offset-2">
-        				<div class="footer-border"></div>
-        				<p>Made by Anli Zaimi at <a href="http://azmind.com" target="_blank"><strong>AZMIND</strong></a> 
-        					having a lot of fun. <i class="fa fa-smile-o"></i></p>
-        			</div>
-        			
-        		</div>
-        	</div>
-        </footer>
-
-
-        <script src="assets/js/jquery-1.11.1.min.js"></script>
-        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-        <script src="assets/js/jquery.backstretch.min.js"></script>
-        <script src="assets/js/scripts.js"></script>
- 
-
-    </body>
+</body>
 
 </html>

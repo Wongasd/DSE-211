@@ -7,18 +7,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $FirstName = trim($_POST['FirstName']);
     $LastName = trim($_POST['LastName']);
     $Email = trim($_POST['Email']);
-    $Password = password_hash(trim($_POST['Password']), PASSWORD_BCRYPT); // Encrypt the password
     $Phone = trim($_POST['Phone']);
     $CountryCode = trim($_POST['CountryCode']); // Get the country code
     $Address = trim($_POST['Address']);
     $MembershipDate = date('Y-m-d');  // Automatically sets the current date as membership date
     $Permission = "borrower";  // Automatically set permission as "borrower"
 
-    $hashedPassword = password_hash($Password, PASSWORD_DEFAULT);
-
     // Check if the required fields are empty
     if (empty($FirstName) || empty($LastName) || empty($Email)) {
-        echo "<script>alert('First Name, Last Name, and Email are required')</script>";
+        echo "<script>alert('First Name, Last Name and Email are required')</script>";
     } else {
         
         // Check if the email is already registered
@@ -36,16 +33,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $Phone = $CountryCode . $Phone;
 
             // If email is not found, proceed with the insertion
-            $stmt = $conn->prepare("INSERT INTO users (FirstName, LastName, Email, Password, Phone, Address, MembershipDate, Permission) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssssss", $FirstName, $LastName, $Email, $hashedPassword, $Phone, $Address, $MembershipDate, $Permission);
+            $stmt = $conn->prepare("INSERT INTO users (FirstName, LastName, Email, Phone, Address, MembershipDate, Permission) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssss", $FirstName, $LastName, $Email, $Phone, $Address, $MembershipDate, $Permission);
 
             // Execute the statement and check for success
             if ($stmt->execute()) {
                 // On success, show success message and redirect to index.php
-                echo "<h1 style='color: green;'>Registration successful! Redirecting to the login page...</h1>";
+                echo "<h1 style='color: green;'>Registration successful! Redirecting to homepage...</h1>";
                 echo "<script>
                         setTimeout(function() {
-                            window.location.href = 'login.php';
+                            window.location.href = 'index.php';
                         }, 3000); // Redirect after 3 seconds
                       </script>";
                 exit();  // Stop further execution of code
@@ -60,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 ?>
-
 
 
 <!DOCTYPE html>
@@ -96,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="register.php" method="post" class="registration-form">
+                                <form role="form" action="" method="post" class="registration-form">
                                     <div class="form-group">
                                         <label class="sr-only" for="FirstName">First name</label>
                                         <input type="text" name="FirstName" placeholder="First name..." class="form-first-name form-control" id="FirstName" required>
@@ -109,22 +105,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <label class="sr-only" for="Email">Email</label>
                                         <input type="email" name="Email" placeholder="Email..." class="form-email form-control" id="Email" required>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label class="sr-only" for="Password">Password</label>
-                                        <div class="input-group">
-                                            <input type="password" name="Password" placeholder="Password..." class="form-password form-control" id="Password" required>
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-default" type="button" onclick="togglePassword()">
-                                                    <i class="fa fa-eye" id="togglePasswordIcon"></i>
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-
                                     <div class="form-group">
                                         <label class="sr-only" for="Address">Address</label>
-                                        <textarea name="Address" placeholder="Your Address" class="form-address form-control" id="Address"></textarea>
+                                        <textarea name="Address" placeholder="Your Address" class="form-about-yourself form-control" id="Address"></textarea>
                                     </div>
 
                                     <div class="form-group">
@@ -140,18 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <input type="tel" name="Phone" placeholder="Phone number..." class="form-phone form-control" id="Phone" required maxlength="10">
                                     </div>
 
-                                    
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-xs-6">
-                                                <button type="submit" class="btn btn-primary btn-block">Sign me up!</button>
-                                            </div>
-                                            <div class="col-xs-6">
-                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='login.php'">Login</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                    <button type="submit" class="btn">Sign me up!</button>
                                 </form>
                             </div>
                         </div>
@@ -182,21 +154,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Call the function initially to set the correct length
         updatePhoneLength();
-
-        function togglePassword() {
-        const passwordField = document.getElementById("Password");
-        const toggleIcon = document.getElementById("togglePasswordIcon");
-
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            toggleIcon.classList.remove("fa-eye");
-            toggleIcon.classList.add("fa-eye-slash");
-        } else {
-            passwordField.type = "password";
-            toggleIcon.classList.remove("fa-eye-slash");
-            toggleIcon.classList.add("fa-eye");
-        }
-    }
     </script>
 
 </body>
