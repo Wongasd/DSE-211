@@ -2,27 +2,48 @@
 include_once("database/db.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
 
     $Email = trim($_POST['Email']);
     $Password = trim($_POST['Password']);
 
-    $query = "SELECT * FROM users WHERE Email = '".$Email."'";
-    $sql = mysqli_query($conn,$query);
-    $rows = mysqli_num_rows($sql);
-	
-    if($rows == 1){
-        $row = mysqli_fetch_array($sql, MYSQLI_ASSOC);
+    // Prepare the statement to prevent SQL injection
+    $stmt = $conn->prepare("SELECT * FROM users WHERE Email = ?");
+    $stmt->bind_param("s", $Email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $hashedPassword = $row['Password'];
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
 
-        if(password_verify($Password, $hashedPassword)){
-            echo "<script>alert('login success');window.location.href='index.php';</script>";
-        }else{
-            echo "<script>alert('Invalid Password');</script>";
+        // Verify the entered password with the stored hashed password
+        if (password_verify($Password, $user['Password'])) {
+            // Set session variables upon successful login
+            $_SESSION['UserId'] = $user['UserId'];
+            $_SESSION['Email'] = $user['Email'];
+            $_SESSION['Permission'] = $user['Permission'];
+
+            // Redirect based on user permission
+            if ($user['Permission'] == "admin") {
+                echo "<script>alert('Login as admin'); window.location.href='index.php';</script>";
+            } else {
+                echo "<script>alert('Login successful'); window.location.href='index.php';</script>";
+            }
+        } else {
+            echo "<script>alert('Incorrect password, please try again');</script>";
         }
+    } else {
+        echo "<script>alert('No account found with that email');</script>";
     }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
+
+
+
 
 
 
@@ -59,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="login.php" method="POST" class="registration-form">
+                                <form role="form" action="login.php" method="post" class="registration-form">
 
                                     <div class="form-group">
                                         <label class="sr-only" for="Email">Email</label>

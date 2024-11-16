@@ -36,9 +36,9 @@ include_once("database/db.php");
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-md-6">
-						<div class="social-links">
+						<!-- <div class="social-links">
 							<ul>
-								<!-- <li>
+								<li>
 									<a href="#"><i class="icon icon-facebook"></i></a>
 								</li>
 								<li>
@@ -49,21 +49,15 @@ include_once("database/db.php");
 								</li>
 								<li>
 									<a href="#"><i class="icon icon-behance-square"></i></a>
-								</li> -->
+								</li>
 							</ul>
-						</div> 
+						</div>social-links -->
 					</div>
 					<div class="col-md-6">
     <div class="right-element">
-        <a href="<?php echo isset($_SESSION['UserId']) ? 'users.php' : 'register.php'; ?>" class="user-account for-buy">
+        <a href="<?php echo isset($_SESSION['user_id']) ? 'users.php' : 'register.php'; ?>" class="user-account for-buy">
             <i class="icon icon-user"></i><span>Account</span>
         </a>
-		
-		<?php if (isset($_SESSION['UserId'])): ?>
-                <a href="logout.php" class="btn btn-primary ml-2">
-                    <i class="icon icon-logout"></i> Logout
-                </a>
-        <?php endif; ?>
 
         <div class="action-menu">
             <div class="search-bar">

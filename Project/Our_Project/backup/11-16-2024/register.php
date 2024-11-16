@@ -7,14 +7,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $FirstName = trim($_POST['FirstName']);
     $LastName = trim($_POST['LastName']);
     $Email = trim($_POST['Email']);
-    $Password = trim($_POST['Password']);
+    $Password = password_hash(trim($_POST['Password']), PASSWORD_BCRYPT); // Encrypt the password
     $Phone = trim($_POST['Phone']);
     $CountryCode = trim($_POST['CountryCode']); // Get the country code
     $Address = trim($_POST['Address']);
     $MembershipDate = date('Y-m-d');  // Automatically sets the current date as membership date
     $Permission = "borrower";  // Automatically set permission as "borrower"
 
-    $hashedPassword = password_hash($Password, PASSWORD_BCRYPT);
+    $hashedPassword = password_hash($Password, PASSWORD_DEFAULT);
 
     // Check if the required fields are empty
     if (empty($FirstName) || empty($LastName) || empty($Email)) {
