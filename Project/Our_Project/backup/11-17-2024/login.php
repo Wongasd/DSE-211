@@ -42,12 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link rel="shortcut icon" href="assets/ico/favicon.png">
-
-    <style>
-            label {
-                color: white; /* Set label text color to white */
-            }
-        </style>
 </head>
 
 <body>

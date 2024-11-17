@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2024 at 09:38 AM
+-- Generation Time: Nov 17, 2024 at 08:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,13 +33,6 @@ CREATE TABLE `authors` (
   `LastName` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `authors`
---
-
-INSERT INTO `authors` (`AuthorID`, `FirstName`, `LastName`) VALUES
-(1, '1231', '12313');
-
 -- --------------------------------------------------------
 
 --
@@ -53,16 +46,8 @@ CREATE TABLE `books` (
   `PublishersID` int(11) DEFAULT NULL,
   `PublishedYear` date DEFAULT NULL,
   `GenreID` int(11) DEFAULT NULL,
-  `Quantity` int(11) DEFAULT 1,
-  `Image` varchar(52) NOT NULL
+  `Quantity` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `books`
---
-
-INSERT INTO `books` (`BookID`, `Title`, `AuthorID`, `PublishersID`, `PublishedYear`, `GenreID`, `Quantity`, `Image`) VALUES
-(1, 'asdasd', 1, NULL, '0000-00-00', 1, 5, 'db_image/6739a65f6ae84.png');
 
 -- --------------------------------------------------------
 
@@ -74,13 +59,6 @@ CREATE TABLE `genres` (
   `GenreID` int(11) NOT NULL,
   `GenreName` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `genres`
---
-
-INSERT INTO `genres` (`GenreID`, `GenreName`) VALUES
-(1, 'fantasy');
 
 -- --------------------------------------------------------
 
@@ -214,19 +192,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `AuthorID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `AuthorID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `BookID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `BookID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `genres`
 --
 ALTER TABLE `genres`
-  MODIFY `GenreID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `GenreID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `permission`

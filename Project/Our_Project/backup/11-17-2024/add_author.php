@@ -1,26 +1,30 @@
 <?php 
 include_once("database/db.php");
 
+if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
+    echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   
+    $FirstName = trim($_POST['FirstName']);
+    $LastName = trim($_POST['LastName']);
 
-    $Email = trim($_POST['Email']);
-    $Password = trim($_POST['Password']);
+    $qry = "SELECT * FROM authors where FirstName = '".$FirstName."' AND LastName = '".$LastName."' ";
+	$result = mysqli_query($conn,$qry);
+	$rows = mysqli_num_rows($result);
 
-    $query = "SELECT * FROM users WHERE Email = '".$Email."'";
-    $sql = mysqli_query($conn,$query);
-    $rows = mysqli_num_rows($sql);
-	
-    if($rows == 1){
-        $row = mysqli_fetch_array($sql, MYSQLI_ASSOC);
-
-        $hashedPassword = $row['Password'];
-
-        if(password_verify($Password, $hashedPassword)){
-            echo "<script>alert('login success');window.location.href='index.php';</script>";
-        }else{
-            echo "<script>alert('Invalid Password');</script>";
-        }
-    }
+	if($rows == 1){
+		echo "<script>alert('That person is already in database');</script>";
+	}else{
+	$query = "INSERT INTO authors(FirstName, LastName) VALUES ('$FirstName','$LastName')";
+	if($sql = mysqli_query($conn,$query)){
+		echo "<script>window.location.href='login.php';alert('create successful');</script>";
+	}else{
+		echo "<script>alert('Error, Please Try Again');</script>";
+		}
+	}
 }
 ?>
 
@@ -33,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign Up Your Account Here!</title>
+    <title>Authors</title>
 
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -42,12 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link rel="shortcut icon" href="assets/ico/favicon.png">
-
-    <style>
-            label {
-                color: white; /* Set label text color to white */
-            }
-        </style>
 </head>
 
 <body>
@@ -57,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div class="row">
                     <div class="col-sm-8 col-sm-offset-2 text">
-                        <h1>Sign Up Now!</h1>
+                        <h1>Authors</h1>
                     </div>
                 </div>
 
@@ -65,15 +63,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="login.php" method="POST" class="registration-form">
+                                <form role="form" action="add_author.php" method="POST" class="registration-form">
 
                                     <div class="form-group">
-                                        <label class="sr-only" for="Email">Email</label>
-                                        <input type="text" name="Email" placeholder="Enter Your Email..." class="form-email form-control" id="Email" required>
+                                        <label class="sr-only" for="FirstName">First name</label>
+                                        <input type="text" name="FirstName" placeholder="First name..." class="form-first-name form-control" id="FirstName" required>
                                     </div>
                                     <div class="form-group">
-                                        <label class="sr-only" for="Password">Password</label>
-                                        <input type="text" name="Password" placeholder="Enter Your Password..." class="form-password form-control" id="Password" required>
+                                        <label class="sr-only" for="LastName">Last name</label>
+                                        <input type="text" name="LastName" placeholder="Last name..." class="form-last-name form-control" id="LastName" required>
                                     </div>
                                     
                                     <div class="form-group">

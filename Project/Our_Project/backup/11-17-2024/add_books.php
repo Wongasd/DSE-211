@@ -1,26 +1,59 @@
 <?php 
 include_once("database/db.php");
 
+// if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
+//     echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
+//     exit();
+// }
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    $Email = trim($_POST['Email']);
-    $Password = trim($_POST['Password']);
-
-    $query = "SELECT * FROM users WHERE Email = '".$Email."'";
+   
+    $query = "SELECT * FROM books";
     $sql = mysqli_query($conn,$query);
-    $rows = mysqli_num_rows($sql);
-	
-    if($rows == 1){
-        $row = mysqli_fetch_array($sql, MYSQLI_ASSOC);
 
-        $hashedPassword = $row['Password'];
+if(isset($_POST['submit'])){
+	if (!empty($_FILES['image']['name'])) 
+	{
+		$ext= explode('.', $_FILES['image']['name']);
 
-        if(password_verify($Password, $hashedPassword)){
-            echo "<script>alert('login success');window.location.href='index.php';</script>";
-        }else{
-            echo "<script>alert('Invalid Password');</script>";
-        }
-    }
+		$ext= strtolower(array_pop($ext));
+
+		$file= 'images/'.date('YmdHis').'.'.$ext;
+
+		if (($ext == 'jpg'|| $ext == 'png'|| $ext == 'jpeg' || $ext == 'gif')) {
+			$target_path = $file;
+		}else{
+			$error_ext = 1;
+		}
+		if (file_exists($file)) {
+			$file_exists = 1;
+		}
+	}
+if (isset($error_ext)) {
+		echo "<Script>alert(Please upload .jpg,.png or .jpeg files only...)</script>";
+	}elseif (isset($file_exists)) {
+		echo "<script>alert(This file already exists!)</script";
+	}elseif (isset($target_path)&& !move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
+		echo "<script>alert('Upload Failed....')</script>";
+	}else{
+		$image = $file;
+		$m_name = $_POST['m_name'];
+		$m_hours = $_POST['m_hours'];
+		$m_about = $_POST['m_about'];
+		$m_price = $_POST['m_price'];
+		$m_general = $_POST['m_general'];
+
+	$qry = "INSERT INTO movie(a_id,m_name,m_hours,m_about,m_price,m_pic,m_genre) VALUES ('".$_SESSION['id']."','$m_name','$m_hours','$m_about','$m_price','$image','$m_general')";
+	if($result = mysqli_query($conn,$qry)){
+		echo "<script>window.location.href='admin.php';alert('add sucessed');</script>";
+	}else{
+		echo "<script>alert('add failed');</script>";
+	}
+
+	}
+}
+
+
 }
 ?>
 
@@ -42,12 +75,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link rel="shortcut icon" href="assets/ico/favicon.png">
-
-    <style>
-            label {
-                color: white; /* Set label text color to white */
-            }
-        </style>
 </head>
 
 <body>
