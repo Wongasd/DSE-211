@@ -16,11 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashedPassword = $row['Password'];
 
         if(password_verify($Password, $hashedPassword)){
-
-            $_SESSION['UserID'] = $row['UserID'];
-            $_SESSION['Permission'] = $row['Permission'];
-
-            echo "<script>alert('Login Success');window.location.href='index.php';</script>";
+            echo "<script>alert('login success');window.location.href='index.php';</script>";
         }else{
             echo "<script>alert('Invalid Password');</script>";
         }
@@ -72,11 +68,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <form role="form" action="login.php" method="POST" class="registration-form">
 
                                     <div class="form-group">
-                                        <label for="Email">Email</label>
+                                        <label class="sr-only" for="Email">Email</label>
                                         <input type="text" name="Email" placeholder="Enter Your Email..." class="form-email form-control" id="Email" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="Password">Password</label>
+                                        <label class="sr-only" for="Password">Password</label>
                                         <input type="text" name="Password" placeholder="Enter Your Password..." class="form-password form-control" id="Password" required>
                                     </div>
                                     

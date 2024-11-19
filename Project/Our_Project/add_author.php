@@ -20,12 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}else{
 	$query = "INSERT INTO authors(FirstName, LastName) VALUES ('$FirstName','$LastName')";
 	if($sql = mysqli_query($conn,$query)){
-		echo "<script>window.location.href='login.php';alert('create successful');</script>";
+		echo "<script>window.location.href='index.php';alert('create successful');</script>";
 	}else{
 		echo "<script>alert('Error, Please Try Again');</script>";
 		}
 	}
-}
+}   
 ?>
 
 
@@ -46,6 +46,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="assets/css/style.css">
 
     <link rel="shortcut icon" href="assets/ico/favicon.png">
+
+    <style>
+            label {
+                color: white; /* Set label text color to white */
+            }
+        </style>
 </head>
 
 <body>
@@ -66,21 +72,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <form role="form" action="add_author.php" method="POST" class="registration-form">
 
                                     <div class="form-group">
-                                        <label class="sr-only" for="FirstName">First name</label>
+                                        <label for="FirstName">First name :</label>
                                         <input type="text" name="FirstName" placeholder="First name..." class="form-first-name form-control" id="FirstName" required>
                                     </div>
                                     <div class="form-group">
-                                        <label class="sr-only" for="LastName">Last name</label>
+                                        <label for="LastName">Last name :</label>
                                         <input type="text" name="LastName" placeholder="Last name..." class="form-last-name form-control" id="LastName" required>
                                     </div>
                                     
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-6">
-                                                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                                                <button type="submit" class="btn btn-primary btn-block">Create</button>
                                             </div>
                                             <div class="col-xs-6">
-                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='register.php'">Sign up</button>
+                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='index.php'">Go back</button>
                                             </div>
                                         </div>
                                     </div>

@@ -1,7 +1,15 @@
-<?php 
+<?php
+// Include the database connection file
 include_once("database/db.php");
 
-
+// Fetch books data from the database
+$queryBooks = "SELECT b.BookID, b.Title, b.Image, b.Quantity, 
+                      CONCAT(a.FirstName, ' ', a.LastName) AS AuthorName 
+               FROM books b 
+               JOIN authors a ON b.AuthorID = a.AuthorID
+               ORDER BY b.Title ASC 
+               LIMIT 4"; // Limit to 4 featured books for display
+$resultBooks = mysqli_query($conn, $queryBooks);
 ?>
 
 <!DOCTYPE html>
@@ -99,7 +107,7 @@ include_once("database/db.php");
 						<nav id="navbar">
 							<div class="main-menu stellarnav">
 								<ul class="menu-list">
-									<li class="menu-item active"><a href="#home">Home</a></li>
+									<li class="menu-item active"><a href="index.php">Home</a></li>
 									<li class="menu-item has-sub">
 										<a href="#pages" class="nav-link">Pages</a>
 
@@ -120,7 +128,6 @@ include_once("database/db.php");
 									<li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>
 									<li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>
 									<li class="menu-item"><a href="#latest-blog" class="nav-link">Articles</a></li>
-									<li class="menu-item"><a href="#download-app" class="nav-link">Download App</a></li>
 								</ul>
 
 								<div class="hamburger">
@@ -223,85 +230,48 @@ include_once("database/db.php");
 
 					<div class="product-list" data-aos="fade-up">
 						<div class="row">
+							<?php
+							// Check if there are books to display
+							if (mysqli_num_rows($resultBooks) > 0) {
+								while ($book = mysqli_fetch_assoc($resultBooks)) {
+									$bookImage = !empty($book['Image']) ? htmlspecialchars($book['Image']) : 'images/default-book.jpg';
+									$bookTitle = htmlspecialchars($book['Title']);
+									$authorName = htmlspecialchars($book['AuthorName']);
+									 // Default price if not set
+									?>
+									<div class="col-md-3">
+										<div class="product-item">
+											<figure class="product-style">
+												<img src="<?php echo $bookImage; ?>" alt="Book Cover" class="product-item">
+												<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+											</figure>
+											<figcaption>
+												<h3><?php echo $bookTitle; ?></h3>
+												<span><?php echo $authorName; ?></span>
+											
+											</figcaption>
+										</div>
+									</div>
+									<?php
+								}
+							} else {
+								echo "<p>No featured books available.</p>";
+							}
+							?>
+						</div><!--row-->
+					</div><!--product-list-->
 
-							<div class="col-md-3">
-								<div class="product-item">
-									<figure class="product-style">
-										<img src="images/product-item1.jpg" alt="Books" class="product-item">
-										<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-											Cart</button>
-									</figure>
-									<figcaption>
-										<h3>Simple way of piece life</h3>
-										<span>Armor Ramsey</span>
-										<div class="item-price">$ 40.00</div>
-									</figcaption>
-								</div>
-							</div>
-
-							<div class="col-md-3">
-								<div class="product-item">
-									<figure class="product-style">
-										<img src="images/product-item2.jpg" alt="Books" class="product-item">
-										<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-											Cart</button>
-									</figure>
-									<figcaption>
-										<h3>Great travel at desert</h3>
-										<span>Sanchit Howdy</span>
-										<div class="item-price">$ 38.00</div>
-									</figcaption>
-								</div>
-							</div>
-
-							<div class="col-md-3">
-								<div class="product-item">
-									<figure class="product-style">
-										<img src="images/product-item3.jpg" alt="Books" class="product-item">
-										<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-											Cart</button>
-									</figure>
-									<figcaption>
-										<h3>The lady beauty Scarlett</h3>
-										<span>Arthur Doyle</span>
-										<div class="item-price">$ 45.00</div>
-									</figcaption>
-								</div>
-							</div>
-
-							<div class="col-md-3">
-								<div class="product-item">
-									<figure class="product-style">
-										<img src="images/product-item4.jpg" alt="Books" class="product-item">
-										<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-											Cart</button>
-									</figure>
-									<figcaption>
-										<h3>Once upon a time</h3>
-										<span>Klien Marry</span>
-										<div class="item-price">$ 35.00</div>
-									</figcaption>
-								</div>
-							</div>
-
-						</div><!--ft-books-slider-->
-					</div><!--grid-->
-
-
-				</div><!--inner-content-->
-			</div>
+				</div><!--col-md-12-->
+			</div><!--row-->
 
 			<div class="row">
 				<div class="col-md-12">
-
 					<div class="btn-wrap align-right">
-						<a href="books.php" class="btn-accent-arrow">View all books <i
-								class="icon icon-ns-arrow-right"></i></a>
+						<a href="books.php" class="btn-accent-arrow">View all books <i class="icon icon-ns-arrow-right"></i></a>
 					</div>
-
 				</div>
 			</div>
-		</div>
+		</div><!--container-->
 	</section>
 
 	<section id="best-selling" class="leaf-pattern-overlay">
@@ -1039,7 +1009,7 @@ include_once("database/db.php");
 		</div>
 	</section>
 
-	<section id="download-app" class="leaf-pattern-overlay">
+	<!-- <section id="download-app" class="leaf-pattern-overlay">
 		<div class="corner-pattern-overlay"></div>
 		<div class="container">
 			<div class="row justify-content-center">
@@ -1069,7 +1039,7 @@ include_once("database/db.php");
 				</div>
 			</div>
 		</div>
-	</section>
+	</section> -->
 
 	<footer id="footer">
 		<div class="container">
@@ -1118,7 +1088,7 @@ include_once("database/db.php");
 						<h5>Discover</h5>
 						<ul class="menu-list">
 							<li class="menu-item">
-								<a href="#">Home</a>
+								<a href="index.php">Home</a>
 							</li>
 							<li class="menu-item">
 								<a href="#">Books</a>

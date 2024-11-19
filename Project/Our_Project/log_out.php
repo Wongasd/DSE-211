@@ -1,8 +1,14 @@
 <?php
 session_start();
 
-if(($_GET['action'] && $_GET['action'] == 'logout')){
-	session_destroy();
-	echo "<script>window.location.href='index.php';alert('log out');</script>";
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    // Destroy the session
+    session_unset();
+    session_destroy();
+
+    // Redirect to login page or homepage
+    echo "<script>alert('You have successfully logged out'); window.location.href='index.php';</script>";
+    exit();
 }
+
 ?>

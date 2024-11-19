@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $CountryCode = trim($_POST['CountryCode']); // Get the country code
     $Address = trim($_POST['Address']);
     $MembershipDate = date('Y-m-d');  // Automatically sets the current date as membership date
-    $Permission = 2;  // Automatically set permission as "borrower"
+    $Permission = "borrower";  // Automatically set permission as "borrower"
 
     $hashedPassword = password_hash($Password, PASSWORD_BCRYPT);
 
@@ -42,7 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Execute the statement and check for success
             if ($stmt->execute()) {
                 // On success, show success message and redirect to index.php
-                echo "<script>alert('Register Success')</script>";
+                echo "<h1 style='color: green;'>Registration successful! Redirecting to the login page...</h1>";
+                echo "<script>
+                        setTimeout(function() {
+                            window.location.href = 'login.php';
+                        }, 3000); // Redirect after 3 seconds
+                      </script>";
                 exit();  // Stop further execution of code
             } else {
                 echo "<script>alert('Error!, Please Try Again')</script>";
@@ -79,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             label {
                 color: white; /* Set label text color to white */
             }
-        </style>
+    </style>
 </head>
 
 <body>
@@ -99,20 +104,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="form-bottom">
                                 <form role="form" action="register.php" method="post" class="registration-form">
                                     <div class="form-group">
-                                        <label for="FirstName">First name</label>
+                                        <label class="sr-only" for="FirstName">First name</label>
                                         <input type="text" name="FirstName" placeholder="First name..." class="form-first-name form-control" id="FirstName" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="LastName">Last name</label>
+                                        <label class="sr-only" for="LastName">Last name</label>
                                         <input type="text" name="LastName" placeholder="Last name..." class="form-last-name form-control" id="LastName" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="Email">Email</label>
+                                        <label class="sr-only" for="Email">Email</label>
                                         <input type="email" name="Email" placeholder="Email..." class="form-email form-control" id="Email" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="Password">Password</label>
+                                        <label class="sr-only" for="Password">Password</label>
                                         <div class="input-group">
                                             <input type="password" name="Password" placeholder="Password..." class="form-password form-control" id="Password" required>
                                             <span class="input-group-btn">
@@ -124,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="Address">Address</label>
+                                        <label class="sr-only" for="Address">Address</label>
                                         <textarea name="Address" placeholder="Your Address" class="form-address form-control" id="Address"></textarea>
                                     </div>
 
@@ -137,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="Phone">Phone Number</label>
+                                        <label class="sr-only" for="Phone">Phone</label>
                                         <input type="tel" name="Phone" placeholder="Phone number..." class="form-phone form-control" id="Phone" required maxlength="10">
                                     </div>
 
