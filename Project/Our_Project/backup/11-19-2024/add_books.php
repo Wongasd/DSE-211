@@ -6,7 +6,7 @@ include_once("database/db.php");
 $queryGenres = "SELECT * FROM genres ORDER BY GenreName ASC";
 $resultGenres = mysqli_query($conn, $queryGenres);
 
-$queryAuthors = "SELECT *, CONCAT(FirstName, ' ', LastName) AS FullName FROM authors ORDER BY FirstName, LastName ASC";
+$queryAuthors = "SELECT * FROM authors ORDER BY FirstName, LastName ASC";
 $resultAuthors = mysqli_query($conn, $queryAuthors);
 
 $queryPublishers = "SELECT * FROM publishers ORDER BY PublisherName ASC";
@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $Genre = ($GenreOption === 'new') ? $NewGenre : $_POST['Genre'];
 
     $PublisherOption = $_POST['PublisherOption'];
-    $NewPublisherName = trim($_POST['NewPublisherName']);
+    $NewPublisherName = trim($_POST['PublisherName']);
     $Publisher = ($PublisherOption === 'new') ? $NewPublisherName : $_POST['Publisher'];
 
     $PublishedYear = $_POST['PublishedYear'];
@@ -231,7 +231,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <select class="form-control mt-2" name="Author" id="AuthorDropdown">
                                         <option value="">Select Author</option>
                                         <?php while ($row = mysqli_fetch_assoc($resultAuthors)) { ?>
-                                            <option value="<?php echo htmlspecialchars($row['AuthorID']); ?>"><?php echo htmlspecialchars($row['FullName']); ?></option>
+                                            <option value="<?php echo htmlspecialchars($row['FullName']); ?>"><?php echo htmlspecialchars($row['FullName']); ?></option>
                                         <?php } ?>
                                     </select>
                                     <div id="newAuthorField" style="display: none; margin-top: 10px;">
@@ -251,7 +251,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <select class="form-control mt-2" name="Genre" id="GenreDropdown">
                                         <option value="">Select Genre</option>
                                         <?php while ($row = mysqli_fetch_assoc($resultGenres)) { ?>
-                                            <option value="<?php echo htmlspecialchars($row['GenreID']); ?>"><?php echo htmlspecialchars($row['GenreName']); ?></option>
+                                            <option value="<?php echo htmlspecialchars($row['GenreName']); ?>"><?php echo htmlspecialchars($row['GenreName']); ?></option>
                                         <?php } ?>
                                     </select>
                                     <input type="text" class="form-control mt-2" name="NewGenre" id="newGenreField" placeholder="Enter new genre" style="display: none;">
