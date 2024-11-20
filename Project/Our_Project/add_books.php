@@ -14,9 +14,9 @@ $resultPublishers = mysqli_query($conn, $queryPublishers);
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $Title = trim($_POST['Title']);
-    $AuthorID = $_POST['Author'];
-    $GenreID = $_POST['Genre'];
-    $PublisherID = $_POST['Publisher'];
+    $AuthorID = $_POST['AuthorID'];
+    $GenreID = $_POST['GenreID'];
+    $PublisherID = $_POST['PublisherID'];
     $PublishedYear = date("Y");  // Default current year
     $CopiesAvailable = trim($_POST['CopiesAvailable']);
     $Description = trim($_POST['Description']);
@@ -141,8 +141,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Author">Author:</label>
-                                    <select class="form-control" name="Author" id="Author" required>
+                                    <label for="AuthorID">Author:</label>
+                                    <select class="form-control" name="AuthorID" id="AuthorID" required>
                                         <option value="" disabled selected>Select an Author</option>
                                         <?php while ($author = mysqli_fetch_assoc($resultAuthors)) { ?>
                                             <option value="<?php echo $author['AuthorID']; ?>"><?php echo $author['FirstName'] . " " . $author['LastName']; ?></option>
@@ -161,8 +161,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Publisher">Publisher:</label>
-                                    <select class="form-control" name="Publisher" id="Publisher" required>
+                                    <label for="PublisherID">Publisher:</label>
+                                    <select class="form-control" name="PublisherID" id="PublisherID" required>
                                         <option value="" disabled selected>Select a Publisher</option>
                                         <?php while ($publisher = mysqli_fetch_assoc($resultPublishers)) { ?>
                                             <option value="<?php echo $publisher['PublisherID']; ?>"><?php echo $publisher['PublisherName']; ?></option>
