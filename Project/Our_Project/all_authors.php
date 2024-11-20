@@ -65,13 +65,17 @@ if (!$resultAuthors) {
                                     <?php if ($_SESSION["Permission"] == '1') { ?>
 										<!-- If the user is an admin, the button redirects to the edit page -->
 										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='edit_author.php?AuthorID=<?=$author['AuthorID']?>'">Edit</button>
-									<?php } elseif ($_SESSION["Permission"] == '2') { ?>
+                                        <button type="button" class="btn btn-danger" data-product-tile="add-to-cart" 
+                                        onclick="confirmDeletion('<?=$author['AuthorID']?>')">Delete</button>
+									<?php } elseif ($_SESSION["Permission"] == '3') { ?>
 										<!-- If the user is not an admin, the button redirects to the borrow page -->
 										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='author_details.php?AuthorID=<?=$author['AuthorID']?>'">View</button>
+									<?php } elseif($_SESSION['Permission'] == '2') { ?>
+										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='edit_author.php?AuthorID=<?=$author['AuthorID']?>'">Edit</button>										
 									<?php } else { ?>
-										<!-- If the user is not logged in or has no permission, show an alert and redirect to login -->
+                                    <!-- If the user is not logged in or has no permission, show an alert and redirect to login -->
 										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="alert('Please login first'); window.location.href='login.php';">Login to Continue</button>
-									<?php } ?>
+                                    <?php } ?>
                 </div>
 
             </div>
@@ -88,6 +92,14 @@ if (!$resultAuthors) {
 		crossorigin="anonymous"></script>
 	<script src="js/plugins.js"></script>
 	<script src="js/script.js"></script>
+
+    <script>
+function confirmDeletion(authorID) {
+    if (confirm('Are you sure you want to delete this author?')) {
+        window.location.href = 'delete.php?ACTION=Delete&AuthorID=' + authorID;
+    }
+}
+</script>
     
 </body>
 

@@ -79,7 +79,7 @@ if (!$resultUsers) {
                                                     Edit
                                                 </button>
                                                 <button class="btn btn-danger"
-                                                        onclick="if(confirm('Are you sure you want to delete this user?')) { window.location.href='delete_user.php?UserID=<?php echo $user['UserID']; ?>'; }">
+                                                        onclick="if(confirm('Are you sure you want to delete this user?')) { window.location.href='delete.php?ACTION=Delete&UserID=<?php echo $user['UserID']; ?>'; }">
                                                     Delete
                                                 </button>
                                             <?php } else { ?>
