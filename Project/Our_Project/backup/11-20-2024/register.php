@@ -16,15 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $hashedPassword = password_hash($Password, PASSWORD_BCRYPT);
 
-    // Handling image upload
-    $imageDir = "db_image/";
-    $ImageName = $_FILES['Image']['name'];
-    $ImageTemp = $_FILES['Image']['tmp_name'];
-    $ImagePath = $imageDir . basename($ImageName);
-
     // Check if the required fields are empty
-    if (empty($FirstName) || empty($LastName) || empty($Email) || empty($ImageName)) {
-        echo "<script>alert('First Name, Last Name, Email, and Profile Image are required')</script>";
+    if (empty($FirstName) || empty($LastName) || empty($Email)) {
+        echo "<script>alert('First Name, Last Name, and Email are required')</script>";
     } else {
         
         // Check if the email is already registered
@@ -41,28 +35,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Concatenate the country code with the phone number
             $Phone = $CountryCode . $Phone;
 
-            // Validate and upload the profile image
-            if (move_uploaded_file($ImageTemp, $ImagePath)) {
-                // If image upload is successful, insert data into the database
-                $stmt = $conn->prepare("INSERT INTO users (FirstName, LastName, Email, Password, Phone, Address, MembershipDate, Permission, Image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("sssssssss", $FirstName, $LastName, $Email, $hashedPassword, $Phone, $Address, $MembershipDate, $Permission, $ImagePath);
+            // If email is not found, proceed with the insertion
+            $stmt = $conn->prepare("INSERT INTO users (FirstName, LastName, Email, Password, Phone, Address, MembershipDate, Permission) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssss", $FirstName, $LastName, $Email, $hashedPassword, $Phone, $Address, $MembershipDate, $Permission);
 
-                // Execute the statement and check for success
-                if ($stmt->execute()) {
-                    echo "<script>alert('Register Success');window.location.href='login.php';</script>";
-                    exit();  // Stop further execution of code
-                } else {
-                    echo "<script>alert('Error!, Please Try Again')</script>";
-                }
+            // Execute the statement and check for success
+            if ($stmt->execute()) {
+                // On success, show success message and redirect to index.php
+                echo "<script>alert('Register Success')</script>";
+                exit();  // Stop further execution of code
             } else {
-                echo "<script>alert('Image upload failed. Please try again.');</script>";
+                echo "<script>alert('Error!, Please Try Again')</script>";
             }
-
-            // Close statement
-            $stmt->close();
         }
+
+        // Close statement
+        $stmt->close();
     }
 }
+
 ?>
 
 
@@ -106,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="add_users.php" method="post" enctype="multipart/form-data" class="registration-form">
+                                <form role="form" action="register.php" method="post" class="registration-form">
                                     <div class="form-group">
                                         <label for="FirstName">First name</label>
                                         <input type="text" name="FirstName" placeholder="First name..." class="form-first-name form-control" id="FirstName" required>
@@ -150,11 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <input type="tel" name="Phone" placeholder="Phone number..." class="form-phone form-control" id="Phone" required maxlength="10">
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="Image">Profile Image</label>
-                                        <input type="file" name="Image" class="form-control" id="Image" accept="image/*" required>
-                                    </div>
-
+                                    
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-6">

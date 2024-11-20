@@ -14,6 +14,8 @@ $resultBooks = mysqli_query($conn, $queryBooks);
 // Fetch genres from the database
 $queryGenres = "SELECT * FROM genres ORDER BY GenreName ASC";
 $resultGenres = mysqli_query($conn, $queryGenres);
+
+$Permission = isset($_SESSION['Permission']) ? $_SESSION['Permission'] : '';
 ?>
 
 <!DOCTYPE html>
@@ -42,61 +44,6 @@ $resultGenres = mysqli_query($conn, $queryGenres);
 
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
-
-	<div id="header-wrap">
-
-		<div class="top-content">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-md-6">
-						<div class="social-links">
-							<ul>
-								<!-- <li>
-									<a href="#"><i class="icon icon-facebook"></i></a>
-								</li>
-								<li>
-									<a href="#"><i class="icon icon-twitter"></i></a>
-								</li>
-								<li>
-									<a href="#"><i class="icon icon-youtube-play"></i></a>
-								</li>
-								<li>
-									<a href="#"><i class="icon icon-behance-square"></i></a>
-								</li> -->
-							</ul>
-						</div> 
-					</div>
-					<div class="col-md-6">
-    <div class="right-element">
-        <a href="<?php echo isset($_SESSION['UserId']) ? 'users.php' : 'register.php'; ?>" class="user-account for-buy">
-            <i class="icon icon-user"></i><span>Account</span>
-        </a>
-		
-		<?php if (isset($_SESSION['UserId'])): ?>
-                <a href="logout.php" class="btn btn-primary ml-2">
-                    <i class="icon icon-logout"></i> Logout
-                </a>
-        <?php endif; ?>
-
-        <div class="action-menu">
-            <div class="search-bar">
-                <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-                    <i class="icon icon-search"></i>
-                </a>
-                <form role="search" method="get" class="search-box">
-                    <input class="search-field text search-input" placeholder="Search" type="search">
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-				</div>
-			</div>
-		</div><!--top-content-->
-
-	</div><!--header-wrap-->	
 
 	<?php include 'header.php'; ?>
 
@@ -138,19 +85,31 @@ $resultGenres = mysqli_query($conn, $queryGenres);
                     }
 
                     while ($book = mysqli_fetch_assoc($resultAllBooks)): ?>
-                        <div class="col-md-3">
-                            <div class="product-item">
-                                <figure class="product-style">
-                                    <img src="<?php echo htmlspecialchars($book['Image']); ?>" 
-                                         alt="<?php echo htmlspecialchars($book['Title']); ?>" class="product-item">
-                                    <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
-                                </figure>
-                                <figcaption>
-                                    <h3><?php echo htmlspecialchars($book['Title']); ?></h3>
-                                    <span><?php echo htmlspecialchars($book['AuthorName']); ?></span>
-                                </figcaption>
-                            </div>
-                        </div>
+
+					<div class="col-md-3">
+						<div class="product-item">
+							<figure class="product-style">
+								<img src="<?php echo htmlspecialchars($book['Image']); ?>" 
+									alt="<?php echo htmlspecialchars($book['Title']); ?>" class="product-item">
+
+									<?php if ($Permission == '1') { ?>
+										<!-- If the user is an admin, the button redirects to the edit page -->
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='edit_book.php?BookID=<?=$book['BookID']?>'">Edit</button>
+									<?php } elseif ($Permission == '2') { ?>
+										<!-- If the user is not an admin, the button redirects to the borrow page -->
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='borrow.php?BookID=<?=$book['BookID']?>'">Borrow</button>
+									<?php } else { ?>
+										<!-- If the user is not logged in or has no permission, show an alert and redirect to login -->
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="alert('Please login first'); window.location.href='login.php';">Login to Continue</button>
+									<?php } ?>
+
+							</figure>
+							<figcaption>
+								<h3><?php echo htmlspecialchars($book['Title']); ?></h3>
+								<span><?php echo htmlspecialchars($book['AuthorName']); ?></span>
+							</figcaption>
+						</div>
+					</div>
                     <?php endwhile; ?>
                 </div>
             </div>
@@ -205,159 +164,7 @@ $resultGenres = mysqli_query($conn, $queryGenres);
 		</div>
 	</section>
 
-	<footer id="footer">
-		<div class="container">
-			<div class="row">
-
-				<div class="col-md-4">
-
-					<div class="footer-item">
-						<div class="company-brand">
-							<img src="images/main-logo.png" alt="logo" class="footer-logo">
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed ptibus liberolectus
-								nonet psryroin. Amet sed lorem posuere sit iaculis amet, ac urna. Adipiscing fames
-								semper erat ac in suspendisse iaculis.</p>
-						</div>
-					</div>
-
-				</div>
-
-				<div class="col-md-2">
-
-					<div class="footer-menu">
-						<h5>About Us</h5>
-						<ul class="menu-list">
-							<li class="menu-item">
-								<a href="#">vision</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">articles </a>
-							</li>
-							<li class="menu-item">
-								<a href="#">careers</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">service terms</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">donate</a>
-							</li>
-						</ul>
-					</div>
-
-				</div>
-				<div class="col-md-2">
-
-					<div class="footer-menu">
-						<h5>Discover</h5>
-						<ul class="menu-list">
-							<li class="menu-item">
-								<a href="index.php">Home</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">Books</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">Authors</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">Subjects</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">Advanced Search</a>
-							</li>
-						</ul>
-					</div>
-
-				</div>
-				<div class="col-md-2">
-
-					<div class="footer-menu">
-						<h5>My account</h5>
-						<ul class="menu-list">
-							<li class="menu-item">
-								<a href="#">Sign In</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">View Cart</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">My Wishtlist</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">Track My Order</a>
-							</li>
-						</ul>
-					</div>
-
-				</div>
-				<div class="col-md-2">
-
-					<div class="footer-menu">
-						<h5>Help</h5>
-						<ul class="menu-list">
-							<li class="menu-item">
-								<a href="#">Help center</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">Report a problem</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">Suggesting edits</a>
-							</li>
-							<li class="menu-item">
-								<a href="#">Contact us</a>
-							</li>
-						</ul>
-					</div>
-
-				</div>
-
-			</div>
-			<!-- / row -->
-
-		</div>
-	</footer>
-
-	<div id="footer-bottom">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-
-					<div class="copyright">
-						<div class="row">
-
-							<div class="col-md-6">
-								<p>© 2022 All rights reserved. Free HTML Template by <a
-										href="https://www.templatesjungle.com/" target="_blank">TemplatesJungle</a></p>
-							</div>
-
-							<div class="col-md-6">
-								<div class="social-links align-right">
-									<ul>
-										<li>
-											<a href="#"><i class="icon icon-facebook"></i></a>
-										</li>
-										<li>
-											<a href="#"><i class="icon icon-twitter"></i></a>
-										</li>
-										<li>
-											<a href="#"><i class="icon icon-youtube-play"></i></a>
-										</li>
-										<li>
-											<a href="#"><i class="icon icon-behance-square"></i></a>
-										</li>
-									</ul>
-								</div>
-							</div>
-
-						</div>
-					</div><!--grid-->
-
-				</div><!--footer-bottom-content-->
-			</div>
-		</div>
-	</div>
+	<?php include 'footer.php'; ?>
 
 	<script src="js/jquery-1.11.0.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"

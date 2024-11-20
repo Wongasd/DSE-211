@@ -175,8 +175,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <input type="number" class="form-control" name="CopiesAvailable" id="CopiesAvailable" value="1" required>
                                 </div>
 
+                                <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <button type="submit" class="btn btn-primary btn-block">Add</button>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='index.php'">Go Back</button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <button type="submit" class="btn btn-success">Add Book</button>
                             </form>
                         </div>
                     </div>

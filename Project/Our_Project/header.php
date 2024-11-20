@@ -1,3 +1,9 @@
+<?php 
+$currentPage = basename($_SERVER['PHP_SELF']);
+
+$Permission = isset($_SESSION['Permission']) ? $_SESSION['Permission'] : '';
+?>
+
 <div id="header-wrap">
 
 <div class="top-content">
@@ -16,7 +22,7 @@
 				<div class="right-element">
 					<a href="<?php echo isset($_SESSION['UserID']) ? 'account.php?UserID=' . $_SESSION['UserID'] : '#'; ?>"  class="user-account for-buy"
 						<?php if (!isset($_SESSION['UserID'])): ?>
-							onclick="alert('You haven\'t logged in'); window.location.href = 'register.php'; return false;"
+							onclick="alert('You haven\'t logged in'); window.location.href = 'login.php'; return false;"
 						<?php endif; ?>
 					>
 						Account
@@ -52,7 +58,7 @@
 
 					<div class="col-md-2">
 						<div class="main-logo">
-							<a href="index.php"><img src="images/main-logo.png" alt="logo"></a>
+							<a href="index.php"><img style="width:125px;" src="images/logo.png" alt="logo"></a>
 						</div>
 
 					</div>
@@ -67,20 +73,27 @@
 										<a href="#pages" class="nav-link">Pages</a>
 
 										<ul>
-											<li class="active"><a href="index.php">Home</a></li>
-											<li><a href="about_us.php">About</a></li>
-											<li><a href="index.html">Styles</a></li>
-											<li><a href="index.html">Blog</a></li>
-											<li><a href="index.html">Post Single</a></li>
-											<li><a href="index.html">Our Store</a></li>
-											<li><a href="index.html">Product Single</a></li>
-											<li><a href="index.html">Contact</a></li>
-											<li><a href="thankyou.html">Thank You</a></li>
+											<li class="active"><a href="index.php">Home</a></li>							
+											<li><a href="all_books.php">All Books</a></li>	
+											<li><a href="all_authors.php">All Authors</a></li>	
+											<li><a href="all_publishers.php">All Publishers</a></li>	
+											<?php if ($Permission == '1'){ ?>
+											<li><a href="all_users.php">All Users</a></li>	
+											<li><a href="add_publisher.php">Add Publishers</a></li>	
+											<li><a href="add_author.php">Add Authors</a></li>
+											<li><a href="add_users.php">Add Users</a></li>
+											<li><a href="add_books.php">Add Books</a></li>	
+											<?php }elseif($Permission == '3'){ ?>
+											<li><a href="add_books.php">Add Books</a></li>
+											<?php } ?>					
 										</ul>
 
 									</li>
-									<li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>
-									<li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>
+
+									<?php if ($currentPage == 'index.php'): ?>
+										<li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>
+									<?php endif; ?>
+
 								</ul>
 
 								<div class="hamburger">

@@ -1,67 +1,82 @@
 <?php
-// Include the database connection file
 include_once("database/db.php");
 
+// if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
+//     echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
+//     exit();
+// }
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   
+
     $FirstName = trim($_POST['FirstName']);
     $LastName = trim($_POST['LastName']);
-    $Email = trim($_POST['Email']);
     $Password = trim($_POST['Password']);
+    $Email = trim($_POST['Email']);
     $Phone = trim($_POST['Phone']);
-    $CountryCode = trim($_POST['CountryCode']); // Get the country code
+    $CountryCode = trim($_POST['CountryCode']);
     $Address = trim($_POST['Address']);
-    $MembershipDate = date('Y-m-d');  // Automatically sets the current date as membership date
-    $Permission = 2;  // Automatically set permission as "borrower"
+    $MembershipDate = date('Y-m-d');  // Set the current date for MembershipDate
+    $Permission = trim($_POST['Permission']); // Assuming "Permission" is a field (e.g. 'admin', 'user')
 
-    $hashedPassword = password_hash($Password, PASSWORD_BCRYPT);
+    // Hash the password
+    $hashedPassword = password_hash($Password, PASSWORD_DEFAULT);
 
-    // Handling image upload
-    $imageDir = "db_image/";
-    $ImageName = $_FILES['Image']['name'];
-    $ImageTemp = $_FILES['Image']['tmp_name'];
-    $ImagePath = $imageDir . basename($ImageName);
+   // Handle the image upload
+if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
 
-    // Check if the required fields are empty
-    if (empty($FirstName) || empty($LastName) || empty($Email) || empty($ImageName)) {
-        echo "<script>alert('First Name, Last Name, Email, and Profile Image are required')</script>";
-    } else {
-        
-        // Check if the email is already registered
-        $stmt = $conn->prepare("SELECT * FROM users WHERE Email = ?");
-        $stmt->bind_param("s", $Email); // Bind the email parameter
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $imageDir = "db_image/"; // Correct folder path
+    $image = $_FILES['image'];
+    $imageName = $image['name'];
+    $imageTmpName = $image['tmp_name'];
+    $imageSize = $image['size'];
+    $imageError = $image['error'];
+    $imageType = $image['type'];
 
-        // If email is found, show an error message
-        if ($result->num_rows > 0) {
-            echo "<script>alert('Email already exists')</script>";
-        } else {
-        
-            // Concatenate the country code with the phone number
-            $Phone = $CountryCode . $Phone;
+    // Allowed file extensions
+    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+    $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
 
-            // Validate and upload the profile image
-            if (move_uploaded_file($ImageTemp, $ImagePath)) {
-                // If image upload is successful, insert data into the database
-                $stmt = $conn->prepare("INSERT INTO users (FirstName, LastName, Email, Password, Phone, Address, MembershipDate, Permission, Image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("sssssssss", $FirstName, $LastName, $Email, $hashedPassword, $Phone, $Address, $MembershipDate, $Permission, $ImagePath);
+    // Check if file type is allowed
+    if (in_array($imageExt, $allowed)) {
+        // Check file size (limit to 2MB)
+        if ($imageSize <= 2000000) {
+            // Create a unique name for the image and move it to the upload folder
+            $newImageName = uniqid('', true) . "." . $imageExt;
+            $uploadPath = $imageDir . $newImageName; // Save to the correct path
 
-                // Execute the statement and check for success
-                if ($stmt->execute()) {
-                    echo "<script>alert('Register Success');window.location.href='login.php';</script>";
-                    exit();  // Stop further execution of code
+            if (move_uploaded_file($imageTmpName, $uploadPath)) {
+                // Proceed with inserting the user data and image path into the database
+                $qry = "SELECT * FROM users WHERE Email = '$Email'";
+                $result = mysqli_query($conn, $qry);
+                $rows = mysqli_num_rows($result);
+
+                if ($rows == 1) {
+                    echo "<script>alert('User with this email already exists.');</script>";
                 } else {
-                    echo "<script>alert('Error!, Please Try Again')</script>";
+                    $Phone = $CountryCode . $Phone;
+                    // Insert user data into the database
+                    $query = "INSERT INTO users (FirstName, LastName, Password, Email, Phone, Address, MembershipDate, Permission, Image) 
+                              VALUES ('$FirstName', '$LastName', '$hashedPassword', '$Email', '$Phone', '$Address', '$MembershipDate', '$Permission', '$newImageName')";
+                    if ($sql = mysqli_query($conn, $query)) {
+                        echo "<script>window.location.href='index.php';alert('User created successfully');</script>";
+                    } else {
+                        echo "<script>alert('Error, Please Try Again');</script>";
+                    }
                 }
             } else {
-                echo "<script>alert('Image upload failed. Please try again.');</script>";
+                echo "<script>alert('Error uploading the image.');</script>";
             }
-
-            // Close statement
-            $stmt->close();
+        } else {
+            echo "<script>alert('Image size exceeds 2MB limit.');</script>";
         }
+    } else {
+        echo "<script>alert('Invalid image type. Allowed types are jpg, jpeg, png, gif.');</script>";
     }
+} else {
+    $newImageName = null; // If no image is uploaded, set it as null
+}
+
+
 }
 ?>
 
@@ -74,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign Up Your Account Here!</title>
+    <title>Add User</title>
 
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -85,10 +100,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="shortcut icon" href="assets/ico/favicon.png">
 
     <style>
-            label {
-                color: white; /* Set label text color to white */
-            }
-        </style>
+        label {
+            color: white;
+        }
+
+        /* Custom image styles */
+        .img-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .img-container img {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -98,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div class="row">
                     <div class="col-sm-8 col-sm-offset-2 text">
-                        <h1>Sign Up Now!</h1>
+                        <h1>Add User</h1>
                     </div>
                 </div>
 
@@ -106,18 +133,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="add_users.php" method="post" enctype="multipart/form-data" class="registration-form">
+                                <form role="form" action="add_users.php" method="POST" enctype="multipart/form-data" class="registration-form">
+
                                     <div class="form-group">
-                                        <label for="FirstName">First name</label>
-                                        <input type="text" name="FirstName" placeholder="First name..." class="form-first-name form-control" id="FirstName" required>
+                                        <label for="FirstName">First Name:</label>
+                                        <input type="text" name="FirstName" placeholder="First name..." class="form-control" id="FirstName" required>
                                     </div>
+                                    
                                     <div class="form-group">
-                                        <label for="LastName">Last name</label>
-                                        <input type="text" name="LastName" placeholder="Last name..." class="form-last-name form-control" id="LastName" required>
+                                        <label for="LastName">Last Name:</label>
+                                        <input type="text" name="LastName" placeholder="Last name..." class="form-control" id="LastName" required>
                                     </div>
+
                                     <div class="form-group">
-                                        <label for="Email">Email</label>
-                                        <input type="email" name="Email" placeholder="Email..." class="form-email form-control" id="Email" required>
+                                        <label for="image">Profile Image:</label>
+                                        <input type="file" name="image" class="form-control" id="image" accept="image/*">
                                     </div>
 
                                     <div class="form-group">
@@ -130,6 +160,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 </button>
                                             </span>
                                         </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Email">Email:</label>
+                                        <input type="email" name="Email" placeholder="Email..." class="form-control" id="Email" required>
                                     </div>
 
                                     <div class="form-group">
@@ -151,17 +186,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="Image">Profile Image</label>
-                                        <input type="file" name="Image" class="form-control" id="Image" accept="image/*" required>
+                                        <label for="Permission">Permission:</label>
+                                        <select name="Permission" class="form-control" id="Permission" required>
+                                            <option value="1">Admin</option>
+                                            <option value="2">User</option>
+                                            <option value="3">Librarian</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-6">
-                                                <button type="submit" class="btn btn-primary btn-block">Sign me up!</button>
+                                                <button type="submit" class="btn btn-primary btn-block">Create</button>
                                             </div>
                                             <div class="col-xs-6">
-                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='login.php'">Login</button>
+                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='index.php'">Go Back</button>
                                             </div>
                                         </div>
                                     </div>
@@ -195,8 +234,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Call the function initially to set the correct length
-        updatePhoneLength();
-
+        updatePhoneLength();     
+        
         function togglePassword() {
         const passwordField = document.getElementById("Password");
         const toggleIcon = document.getElementById("togglePasswordIcon");

@@ -76,6 +76,7 @@ if (isset($_GET['UserID'])) {
 
                     <!-- Optionally, you can add a "Go back" button -->
                     <div class="text-center mt-4">
+                        <a href="edit_account.php?UserID=<?=$_SESSION['UserID']?>" class="btn btn-secondary">Edit Account</a>
                         <a href="index.php" class="btn btn-secondary">Go back</a>
                     </div>
                 </div>

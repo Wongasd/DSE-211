@@ -3,7 +3,7 @@
 include_once("database/db.php");
 
 // Fetch authors data from the database
-$queryAuthors = "SELECT AuthorID, CONCAT(FirstName, ' ', LastName) AS FullName, Image, Description 
+$queryAuthors = "SELECT *, CONCAT(FirstName, ' ', LastName) AS FullName
                  FROM authors 
                  ORDER BY FirstName ASC";
 $resultAuthors = mysqli_query($conn, $queryAuthors);
@@ -61,7 +61,19 @@ if (!$resultAuthors) {
                     <p class="author-description text-muted">
                         <?php echo htmlspecialchars(!empty($author['Description']) ? $author['Description'] : 'default'); ?>
                     </p>
+
+                                    <?php if ($_SESSION["Permission"] == '1') { ?>
+										<!-- If the user is an admin, the button redirects to the edit page -->
+										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='edit_author.php?AuthorID=<?=$author['AuthorID']?>'">Edit</button>
+									<?php } elseif ($_SESSION["Permission"] == '2') { ?>
+										<!-- If the user is not an admin, the button redirects to the borrow page -->
+										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='author_details.php?AuthorID=<?=$author['AuthorID']?>'">View</button>
+									<?php } else { ?>
+										<!-- If the user is not logged in or has no permission, show an alert and redirect to login -->
+										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="alert('Please login first'); window.location.href='login.php';">Login to Continue</button>
+									<?php } ?>
                 </div>
+
             </div>
         <?php endwhile; ?>
 
@@ -70,10 +82,13 @@ if (!$resultAuthors) {
 
     <?php include 'footer.php'; ?>
 
-    <script src="js/jquery-1.11.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
+	<script src="js/jquery-1.11.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+		crossorigin="anonymous"></script>
+	<script src="js/plugins.js"></script>
+	<script src="js/script.js"></script>
+    
 </body>
 
 </html>
