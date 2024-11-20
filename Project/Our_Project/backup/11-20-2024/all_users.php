@@ -40,6 +40,32 @@ $resultGenres = mysqli_query($conn, $queryGenres);
 
 </head>
 
+		<header id="header">
+			<div class="container-fluid">
+				<div class="row">
+
+					<div class="col-md-2">
+						<div class="main-logo">
+							<a href="index.php"><img src="images/main-logo.png" alt="logo"></a>
+						</div>
+
+					</div>
+
+					<div class="col-md-10">
+
+						<nav id="navbar">
+							<div class="main-menu stellarnav">
+								<ul class="menu-list">
+									<li class="menu-item active"><a href="index.php">Home</a></li>
+
+							</div>
+						</nav>
+
+					</div>
+
+				</div>
+			</div>
+		</header>
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
 
@@ -97,8 +123,6 @@ $resultGenres = mysqli_query($conn, $queryGenres);
 		</div><!--top-content-->
 
 	</div><!--header-wrap-->	
-
-	<?php include 'header.php'; ?>
 
 	<section id="popular-books" class="bookshelf">
 		<div class="container">

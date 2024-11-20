@@ -10,17 +10,13 @@ $queryBooks = "SELECT b.BookID, b.Title, b.Image, b.Quantity,
                ORDER BY b.Title ASC 
                LIMIT 4"; // Limit to 4 featured books for display
 $resultBooks = mysqli_query($conn, $queryBooks);
-
-// Fetch genres from the database
-$queryGenres = "SELECT * FROM genres ORDER BY GenreName ASC";
-$resultGenres = mysqli_query($conn, $queryGenres);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<title>All Books</title>
+	<title>Index</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,7 +35,6 @@ $resultGenres = mysqli_query($conn, $queryGenres);
 	<link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
-
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
 
@@ -96,9 +91,7 @@ $resultGenres = mysqli_query($conn, $queryGenres);
 			</div>
 		</div><!--top-content-->
 
-	</div><!--header-wrap-->	
-
-	<?php include 'header.php'; ?>
+	</div><!--header-wrap-->
 
 	<section id="popular-books" class="bookshelf">
 		<div class="container">
@@ -111,93 +104,140 @@ $resultGenres = mysqli_query($conn, $queryGenres);
 
 					<ul class="tabs">
 						<li data-tab-target="#all-genre" class="active tab">All Genre</li>
-						<?php while ($genre = mysqli_fetch_assoc($resultGenres)): ?>
-							<li data-tab-target="#genre-<?php echo $genre['GenreID']; ?>" class="tab">
-								<?php echo htmlspecialchars($genre['GenreName']); ?>
-							</li>
-						<?php endwhile; ?>
+						<li data-tab-target="#business" class="tab">Business</li>
+						<li data-tab-target="#technology" class="tab">Technology</li>
+						<li data-tab-target="#romantic" class="tab">Romantic</li>
+						<li data-tab-target="#adventure" class="tab">Adventure</li>
+						<li data-tab-target="#fictional" class="tab">Fictional</li>
 					</ul>
 
-        <!-- Tab Content -->
-        <div class="tab-content">
-            <!-- All Books Section -->
-            <div id="all-genre" data-tab-content class="active">
-                <div class="row">
-                    <?php
-                    // Fetch all books
-                    $queryAllBooks = "
-                        SELECT b.BookID, b.Title, b.Image, 
-                               CONCAT(a.FirstName, ' ', a.LastName) AS AuthorName 
-                        FROM books b 
-                        JOIN authors a ON b.AuthorID = a.AuthorID";
-                    $resultAllBooks = mysqli_query($conn, $queryAllBooks);
+					<div class="tab-content">
+						<div id="all-genre" data-tab-content class="active">
+							<div class="row">
 
-                    // Check for database errors
-                    if (!$resultAllBooks) {
-                        die("Database query failed: " . mysqli_error($conn));
-                    }
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="images/tab-item4.jpg" alt="Books" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
+												Cart</button>
+										</figure>
+										<figcaption>
+											<h3>Just felt from outside</h3>
+											<span>Nicole Wilson</span>
+											<div class="item-price">$ 40.00</div>
+										</figcaption>
+									</div>
+								</div>
 
-                    while ($book = mysqli_fetch_assoc($resultAllBooks)): ?>
-                        <div class="col-md-3">
-                            <div class="product-item">
-                                <figure class="product-style">
-                                    <img src="<?php echo htmlspecialchars($book['Image']); ?>" 
-                                         alt="<?php echo htmlspecialchars($book['Title']); ?>" class="product-item">
-                                    <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
-                                </figure>
-                                <figcaption>
-                                    <h3><?php echo htmlspecialchars($book['Title']); ?></h3>
-                                    <span><?php echo htmlspecialchars($book['AuthorName']); ?></span>
-                                </figcaption>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-            </div>
+							</div>
 
-            <!-- Individual Genre Sections -->
-            <?php
-            // Reset pointer for genres
-            mysqli_data_seek($resultGenres, 0);
+						</div>
+						<div id="business" data-tab-content>
+							<div class="row">
 
-            while ($genre = mysqli_fetch_assoc($resultGenres)): ?>
-                <div id="genre-<?php echo $genre['GenreID']; ?>" data-tab-content>
-                    <div class="row">
-                        <?php
-                        // Fetch books for this genre
-                        $queryBooksByGenre = "
-                            SELECT b.BookID, b.Title, b.Image, 
-                                   CONCAT(a.FirstName, ' ', a.LastName) AS AuthorName 
-                            FROM books b 
-                            JOIN authors a ON b.AuthorID = a.AuthorID
-                            WHERE b.GenreID = " . intval($genre['GenreID']);
-                        $resultBooksByGenre = mysqli_query($conn, $queryBooksByGenre);
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="images/tab-item2.jpg" alt="Books" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
+												Cart</button>
+										</figure>
+										<figcaption>
+											<h3>Peaceful Enlightment</h3>
+											<span>Marmik Lama</span>
+											<div class="item-price">$ 40.00</div>
+										</figcaption>
+									</div>
+								</div>
 
-                        // Check for database errors
-                        if (!$resultBooksByGenre) {
-                            die("Database query failed: " . mysqli_error($conn));
-                        }
+							</div>
+						</div>
 
-                        while ($book = mysqli_fetch_assoc($resultBooksByGenre)): ?>
-                            <div class="col-md-3">
-                                <div class="product-item">
-                                    <figure class="product-style">
-                                        <img src="<?php echo htmlspecialchars($book['Image']); ?>" 
-                                             alt="<?php echo htmlspecialchars($book['Title']); ?>" class="product-item">
-                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
-                                    </figure>
-                                    <figcaption>
-                                        <h3><?php echo htmlspecialchars($book['Title']); ?></h3>
-                                        <span><?php echo htmlspecialchars($book['AuthorName']); ?></span>
-                                    </figcaption>
-                                </div>
-                            </div>
-                        <?php endwhile; ?>
-                    </div>
-                </div>
-            <?php endwhile; ?>
-        </div>
-    </div>
+						<div id="technology" data-tab-content>
+							<div class="row">
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="images/tab-item1.jpg" alt="Books" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
+												Cart</button>
+										</figure>
+										<figcaption>
+											<h3>Peaceful Enlightment</h3>
+											<span>Marmik Lama</span>
+											<div class="item-price">$ 40.00</div>
+										</figcaption>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div id="romantic" data-tab-content>
+							<div class="row">
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="images/tab-item7.jpg" alt="Books" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
+												Cart</button>
+										</figure>
+										<figcaption>
+											<h3>Simple way of piece life</h3>
+											<span>Armor Ramsey</span>
+											<div class="item-price">$ 40.00</div>
+										</figcaption>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div id="adventure" data-tab-content>
+							<div class="row">
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="images/tab-item5.jpg" alt="Books" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
+												Cart</button>
+										</figure>
+										<figcaption>
+											<h3>Life among the pirates</h3>
+											<span>Armor Ramsey</span>
+											<div class="item-price">$ 40.00</div>
+										</figcaption>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div id="fictional" data-tab-content>
+							<div class="row">
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="images/tab-item5.jpg" alt="Books" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
+												Cart</button>
+										</figure>
+										<figcaption>
+											<h3>Life among the pirates</h3>
+											<span>Armor Ramsey</span>
+											<div class="item-price">$ 40.00</div>
+										</figcaption>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+					</div>
 
 				</div><!--inner-tabs-->
 
@@ -366,19 +406,6 @@ $resultGenres = mysqli_query($conn, $queryGenres);
 	<script src="js/plugins.js"></script>
 	<script src="js/script.js"></script>
 
-	<script>
-        // Tab functionality
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('[data-tab-content]').forEach(c => c.classList.remove('active'));
-
-                tab.classList.add('active');
-                document.querySelector(tab.getAttribute('data-tab-target')).classList.add('active');
-            });
-        });
-    </script>
-	
 </body>
 
 </html>

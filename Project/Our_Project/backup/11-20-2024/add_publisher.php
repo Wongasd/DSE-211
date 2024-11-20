@@ -1,7 +1,7 @@
 <?php 
 include_once("database/db.php");
 
-// Check for admin permission (if required)
+// Check for admin permission
 // if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
 //     echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
 //     exit();
@@ -12,28 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $Address = trim($_POST['Address']);
     $Phone = trim($_POST['Phone']);
     $CountryCode = trim($_POST['CountryCode']);
-    $PublisherImage = trim($_POST['PublisherImage']); 
-
-    // Handle image upload
-    if (isset($_FILES['PublisherImage']) && $_FILES['PublisherImage']['error'] == 0) {
-        $imageTmpPath = $_FILES['PublisherImage']['tmp_name'];
-        $imageName = $_FILES['PublisherImage']['name'];
-        $imageExtension = pathinfo($imageName, PATHINFO_EXTENSION);
-        $imageNewName = uniqid('publisher_') . '.' . $imageExtension;
-
-        // Set the upload directory
-        $uploadDir = 'db_image/';
-
-        // Check if the directory exists, if not, create it
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        // Move the uploaded file to the directory
-        $imagePath = $uploadDir . $imageNewName;
-        move_uploaded_file($imageTmpPath, $imagePath);
-        $PublisherImage = $imagePath; // Save the path to the image
-    }
 
     // Check if publisher already exists
     $qry = "SELECT * FROM publishers WHERE PublisherName = '".$PublisherName."'";
@@ -44,9 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>alert('This publisher already exists in the database');</script>";
     } else {
         $Phone = $CountryCode . $Phone;
-        // Insert new publisher with image path
-        $query = "INSERT INTO publishers (PublisherName, Address, Phone, Image) 
-                  VALUES ('$PublisherName', '$Address', '$Phone', '$PublisherImage')";
+        // Insert new publisher
+        $query = "INSERT INTO publishers (PublisherName, Address, Phone) VALUES ('$PublisherName', '$Address', '$Phone')";
         if ($sql = mysqli_query($conn, $query)) {
             echo "<script>window.location.href='index.php';alert('Publisher added successfully');</script>";
         } else {
@@ -56,8 +33,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add Publishers</title>
+    <title>Publishers</title>
 
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -88,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div class="row">
                     <div class="col-sm-8 col-sm-offset-2 text">
-                        <h1>Add Publishers</h1>
+                        <h1>Publishers</h1>
                     </div>
                 </div>
 
@@ -96,16 +71,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="add_publisher.php" method="POST" enctype="multipart/form-data" class="registration-form">
+                                <form role="form" action="add_publisher.php" method="POST" class="registration-form">
 
                                     <div class="form-group">
                                         <label for="PublisherName">Publisher Name :</label>
                                         <input type="text" name="PublisherName" placeholder="Publisher name..." class="form-control" id="PublisherName" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="PublisherImage">Profile Image:</label>
-                                        <input type="file" name="PublisherImage" class="form-control" id="PublisherImage" accept="image/*" required>
                                     </div>
 
                                     <div class="form-group">
