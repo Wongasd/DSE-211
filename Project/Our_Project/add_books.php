@@ -151,8 +151,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Genre">Genre:</label>
-                                    <select class="form-control" name="Genre" id="Genre" required>
+                                    <label for="GenreID">Genre:</label>
+                                    <select class="form-control" name="GenreID" id="GenreID" required>
                                         <option value="" disabled selected>Select a Genre</option>
                                         <?php while ($genre = mysqli_fetch_assoc($resultGenres)) { ?>
                                             <option value="<?php echo $genre['GenreID']; ?>"><?php echo $genre['GenreName']; ?></option>
