@@ -82,7 +82,8 @@ $Permission = isset($_SESSION['Permission']) ? $_SESSION['Permission'] : '';
 											<li><a href="add_publisher.php">Add Publishers</a></li>	
 											<li><a href="add_author.php">Add Authors</a></li>
 											<li><a href="add_users.php">Add Users</a></li>
-											<li><a href="add_books.php">Add Books</a></li>	
+											<li><a href="add_books.php">Add Books</a></li>
+											<li><a href="borrow_list.php">Borrow History</a></li>		
 											<?php }elseif($Permission == '3'){ ?>
 											<li><a href="add_books.php">Add Books</a></li>
 											<?php } ?>					
