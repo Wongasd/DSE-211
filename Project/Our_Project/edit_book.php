@@ -166,6 +166,7 @@ $resultPublishers = $conn->query($queryPublishers);
         <div class="text-center mt-4">
             <input type="submit" class="btn btn-primary" value="Save Changes">
             <input type="button" class="btn btn-secondary" onclick="window.location.href='all_books.php'" value="Go Back">
+            <input type="button" class="btn btn-danger" onclick="confirmDeletion(<?=$_GET['BookID']?>)" value="Delete">
         </div>
     </form>
 </div>
@@ -173,6 +174,20 @@ $resultPublishers = $conn->query($queryPublishers);
 <?php include "footer.php"; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="js/jquery-1.11.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+		crossorigin="anonymous"></script>
+	<script src="js/plugins.js"></script>
+	<script src="js/script.js"></script>
+    
+<script>
+function confirmDeletion(bookID) {
+    if (confirm('Are you sure you want to delete this book? This action cannot be undone.')) {
+        window.location.href = 'delete.php?ACTION=Delete&BookID=' + bookID;
+    }
+}
+</script>
 
 </body>
 

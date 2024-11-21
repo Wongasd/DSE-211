@@ -95,13 +95,15 @@ $Permission = isset($_SESSION['Permission']) ? $_SESSION['Permission'] : '';
 									<?php if ($Permission == '1') { ?>
 										<!-- If the user is an admin, the button redirects to the edit page -->
 										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='edit_book.php?BookID=<?=$book['BookID']?>'">Edit</button>
-									<?php } elseif ($Permission == '2') { ?>
+									<?php } elseif($Permission == '3') { ?>
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='edit_book.php?BookID=<?=$book['BookID']?>'">Edit</button>
+									<?php } elseif($Permission == '2') { ?>
 										<!-- If the user is not an admin, the button redirects to the borrow page -->
-										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='borrow.php?BookID=<?=$book['BookID']?>'">Borrow</button>
-									<?php } else { ?>
-										<!-- If the user is not logged in or has no permission, show an alert and redirect to login -->
-										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="alert('Please login first'); window.location.href='login.php';">Login to Continue</button>
-									<?php } ?>
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='borrow.php?BookID=<?=$book['BookID']?>'">Borrow</button>										
+                                    <?php } else { ?>
+                                    <!-- If the user is not logged in or has no permission, show an alert and redirect to login -->
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="alert('Please login first'); window.location.href='login.php';">Login to Continue</button>                                    
+                                    <?php }  ?>
 
 							</figure>
 							<figcaption>

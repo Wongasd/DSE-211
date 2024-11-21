@@ -53,13 +53,17 @@ $resultPublishers = mysqli_query($conn, $queryPublishers);
                             <?php if ($_SESSION["Permission"] == '1') { ?>
 										<!-- If the user is an admin, the button redirects to the edit page -->
 										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='edit_publisher.php?PublisherID=<?=$publisher['PublisherID']?>'">Edit</button>
+                                        <button type="button" class="btn btn-danger" data-product-tile="add-to-cart" 
+                                        onclick="confirmDeletion('<?=$publisher['PublisherID']?>')">Delete</button>
 									<?php } elseif ($_SESSION["Permission"] == '2') { ?>
 										<!-- If the user is not an admin, the button redirects to the borrow page -->
 										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='publisher_details.php?PublisherID=<?=$publisher['PublisherID']?>'">View</button>
+									<?php } elseif($_SESSION['Permission'] == '3') { ?>
+										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='edit_publisher.php?PublisherID=<?=$publisher['PublisherID']?>'">Edit</button>
 									<?php } else { ?>
-										<!-- If the user is not logged in or has no permission, show an alert and redirect to login -->
-										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="alert('Please login first'); window.location.href='login.php';">Login to Continue</button>
-									<?php } ?>
+                                        <!-- If the user is not logged in or has no permission, show an alert and redirect to login -->
+                                        <button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="alert('Please login first'); window.location.href='login.php';">Login to Continue</button>
+                                    <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -69,5 +73,19 @@ $resultPublishers = mysqli_query($conn, $queryPublishers);
 
     <?php include 'footer.php'; ?> <!-- Include the footer -->
     
+    <script src="js/jquery-1.11.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+		crossorigin="anonymous"></script>
+	<script src="js/plugins.js"></script>
+	<script src="js/script.js"></script>
+    
+    <script>
+        function confirmDeletion(PublisherID) {
+    if (confirm('Are you sure you want to delete this Publisher?')) {
+        window.location.href = 'delete.php?ACTION=Delete&PublisherID=' + PublisherID;
+    }
+}
+    </script>
 </body>
 </html>

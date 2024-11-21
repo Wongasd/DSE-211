@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="add_users.php" method="post" enctype="multipart/form-data" class="registration-form">
+                                <form role="form" action="register.php" method="post" enctype="multipart/form-data" class="registration-form">
                                     <div class="form-group">
                                         <label for="FirstName">First name</label>
                                         <input type="text" name="FirstName" placeholder="First name..." class="form-first-name form-control" id="FirstName" required>
