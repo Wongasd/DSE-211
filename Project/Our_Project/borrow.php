@@ -1,32 +1,23 @@
 <?php
 include_once("database/db.php");
 
+$sql = "s";
 
 
 if(isset($_POST['submit'])){
 
-   $_POST['s'];
-    // Check if the author already exists
-    $qry = "SELECT * FROM authors WHERE FirstName = '$FirstName' AND LastName = '$LastName'";
-    $result = mysqli_query($conn, $qry);
-    $rows = mysqli_num_rows($result);
+    $bookID= $_GET['BookID'];
+    $UserId= $_SESSION['UserID'];
+    $formDate= $_POST['fromDate'];
+    $dueDate= $_POST['dueDate'];
 
-    if ($rows == 1) {
-        echo "<script>alert('That person is already in the database');</script>";
-    } else {
-        // Validate and upload image
-        if (move_uploaded_file($ImageTemp, $ImagePath)) {
-            $query = "INSERT INTO authors (FirstName, LastName, Image, Description) 
-                      VALUES ('$FirstName', '$LastName', '$ImagePath', '$Description')";
-            if ($sql = mysqli_query($conn, $query)) {
-                echo "<script>window.location.href='index.php';alert('Author created successfully');</script>";
-            } else {
-                echo "<script>alert('Error, Please Try Again');</script>";
-            }
-        } else {
-            echo "<script>alert('Image upload failed. Please try again.');</script>";
-        }
-    }
+    $sql = "insert into transactions (BookID, UserID, BorrowDate, DueDate, Status) Values ('$bookID','$UserId','$formDate','$dueDate','PENDING')";
+    if($qry = mysqli_query($conn, $sql)){
+        echo "<script>alert('request borrow successful');</script>";
+    }else{
+        echo "<script>alert('request borrow failed. Please try again.');</script>";
+    }  
+ 
 }
 ?>
 
@@ -69,21 +60,16 @@ if(isset($_POST['submit'])){
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="borrow.php" method="POST" enctype="multipart/form-data" class="registration-form">
+                                <form role="form" action="borrow.php?BookID=<?=$_GET['BookID']?>" method="POST" enctype="multipart/form-data" class="registration-form">
 
                                     <div class="form-group">
                                         <label for="fromDate">from date:</label>
-                                        <input type="datetime-local" id="fromDate" name="birthdaytime" class="form-control">
+                                        <input type="date" id="fromDate" name="fromDate" class="form-control">
                                     </div>
                                     
                                     <div class="form-group">
                                         <label for="dueDate">due date</label>
-                                        <input type="datetime-local" id="toDate" name="toDate" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="Description">Description:</label>
-                                        <textarea name="Description" placeholder="Short description about the author..." class="form-control" id="Description" rows="4" required></textarea>
+                                        <input type="date" id="dueDate" name="dueDate" class="form-control">
                                     </div>
 
                                     <div class="form-group">
@@ -112,6 +98,23 @@ if(isset($_POST['submit'])){
     <script src="assets/js/scripts.js"></script>
 
 </body>
-
 </html>
+ 
+<script>
+    
+    function formatDate(date) {
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const dd = String(date.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
 
+    // Set today's date
+    const today = new Date();
+    document.getElementById('fromDate').value = formatDate(today);
+
+    // Set one week from today
+    const nextWeek = new Date();
+    nextWeek.setDate(today.getDate() + 7); // Add 7 days
+    document.getElementById('dueDate').value = formatDate(nextWeek);
+</script>

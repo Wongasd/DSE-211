@@ -21,7 +21,7 @@ $qry = mysqli_query($conn, $sql);
 <body>
     <div class="container mt-5">
         <button class="btn btn-danger" onclick="window.location.href='index.php'">back</button>
-        <button class="btn btn-primary" onclick="window.location.href='borrow.php'">add new borrower</button>
+        
         <div class=" mt-2">
             <table class="table table-striped table-bordered table-hover ">
                 <thead class="table-dark">
@@ -31,17 +31,22 @@ $qry = mysqli_query($conn, $sql);
                     <th>borrow date</th>
                     <th>return date</th>
                     <th>due date</th>
+                    <th>status</th>
                     <th>action</th>
                 </thead>
                 <tbody>
                 <?php while($fetch= mysqli_fetch_array($qry)){?>
                     <td><?=$fetch['TransactionID']?></td>
-                    <td><?=$fetch['BookId']?></td>
-                    <td><?=$fetch['UserId']?></td>
+                    <td><?=$fetch['BookID']?></td>
+                    <td><?=$fetch['UserID']?></td>
                     <td><?=$fetch['BorrowDate']?></td>
                     <td><?=$fetch['ReturnDate']?></td>
                     <td><?=$fetch['DueDate']?></td>
-                    <td><button class="form-control btn"></button></td>
+                    <td><?=$fetch['Status']?></td>
+                    <!--<td><button class="form-control btn btn-primary" onclick="updateStatus()">approve</button></td>-->
+                        <?php if($fetch['Status']!=="PENDING"){ ?>
+                        <?php } ?>
+                        
                     <?php }?>
                 </tbody>
             </table>
@@ -56,4 +61,16 @@ $qry = mysqli_query($conn, $sql);
 </body>
 
 </html>
-
+<script>
+    function updateStatus() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("demo").innerHTML =
+            this.responseText;
+            }
+        };
+        xhttp.open("GET", "ajax_info.txt");
+        xhttp.send();
+    }
+</script>

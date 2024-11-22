@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2024 at 07:41 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Generation Time: Nov 23, 2024 at 12:52 AM
+-- Server version: 10.4.22-MariaDB
+-- PHP Version: 8.1.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -33,7 +33,7 @@ CREATE TABLE `authors` (
   `LastName` varchar(100) DEFAULT NULL,
   `Description` varchar(255) NOT NULL,
   `Image` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `authors`
@@ -59,7 +59,7 @@ CREATE TABLE `books` (
   `Quantity` int(11) DEFAULT 1,
   `Image` varchar(52) NOT NULL,
   `Description` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `books`
@@ -78,7 +78,7 @@ INSERT INTO `books` (`BookID`, `Title`, `AuthorID`, `GenreID`, `PublisherID`, `P
 CREATE TABLE `genres` (
   `GenreID` int(11) NOT NULL,
   `GenreName` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `genres`
@@ -97,7 +97,7 @@ INSERT INTO `genres` (`GenreID`, `GenreName`) VALUES
 CREATE TABLE `permission` (
   `PermissionID` int(52) NOT NULL,
   `PermissionName` varchar(52) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `permission`
@@ -119,7 +119,7 @@ CREATE TABLE `publishers` (
   `Address` varchar(255) DEFAULT NULL,
   `Phone` varchar(15) DEFAULT NULL,
   `Image` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `publishers`
@@ -141,8 +141,16 @@ CREATE TABLE `transactions` (
   `UserID` int(11) DEFAULT NULL,
   `BorrowDate` date NOT NULL,
   `ReturnDate` date DEFAULT NULL,
-  `DueDate` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `DueDate` date NOT NULL,
+  `Status` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`TransactionID`, `BookID`, `UserID`, `BorrowDate`, `ReturnDate`, `DueDate`, `Status`) VALUES
+(4, 13, 15, '2024-11-23', NULL, '2024-11-30', 'PENDING');
 
 -- --------------------------------------------------------
 
@@ -161,14 +169,15 @@ CREATE TABLE `users` (
   `MembershipDate` date DEFAULT NULL,
   `Permission` varchar(15) NOT NULL,
   `Image` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`UserID`, `FirstName`, `LastName`, `Password`, `Email`, `Phone`, `Address`, `MembershipDate`, `Permission`, `Image`) VALUES
-(14, 'asd', 'dsa', '$2y$10$V5DoELPqLe0f6o3uvydyIe2ArtS26JqPoy4bdQfEcTZ6dL1UKefZ6', 'asd@gmail.com', '+601231312312', 'asdasdadad', '2024-11-19', '1', '');
+(14, 'asd', 'dsa', '$2y$10$V5DoELPqLe0f6o3uvydyIe2ArtS26JqPoy4bdQfEcTZ6dL1UKefZ6', 'asd@gmail.com', '+601231312312', 'asdasdadad', '2024-11-19', '1', ''),
+(15, 'qwe', 'qwe', '$2y$10$jUHyPPQ2iTZDdWmgwqnLiOeV2WcNIYGPHTWei8UP8BMhkde0UMioW', 'qwe@gmail.com', '+60123', 'qwe', '2024-11-22', '2', 'db_image/hihahaha.jpg');
 
 --
 -- Indexes for dumped tables
@@ -257,13 +266,13 @@ ALTER TABLE `publishers`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `TransactionID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `TransactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Constraints for dumped tables
