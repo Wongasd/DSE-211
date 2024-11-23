@@ -78,7 +78,7 @@ $Permission = isset($_SESSION['Permission']) ? $_SESSION['Permission'] : '';
 											<li><a href="all_authors.php">All Authors</a></li>	
 											<li><a href="all_publishers.php">All Publishers</a></li>
 											<li><a href="borrow_list.php">Borrow History</a></li>			
-											<?php if ($Permission == 'admin'){ ?>
+											<?php if ($Permission == '1'){ ?>
 											<li><a href="all_users.php">All Users</a></li>	
 											<li><a href="add_publisher.php">Add Publishers</a></li>	
 											<li><a href="add_author.php">Add Authors</a></li>
