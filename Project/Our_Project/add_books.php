@@ -2,6 +2,11 @@
 // Include the database connection file
 include_once("database/db.php");
 
+if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
+    echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
+    exit();
+}
+
 // Fetch existing genres, authors, and publishers from the database
 $queryGenres = "SELECT * FROM genres ORDER BY GenreName ASC";
 $resultGenres = mysqli_query($conn, $queryGenres);

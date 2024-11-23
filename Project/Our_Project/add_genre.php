@@ -1,6 +1,11 @@
 <?php 
 include_once("database/db.php");
 
+if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
+    echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $GenreName = trim($_POST['GenreName']);
 

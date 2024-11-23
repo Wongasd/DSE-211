@@ -2,10 +2,10 @@
 include_once("database/db.php");
 
 // Check for admin permission (if required)
-// if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
-//     echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
-//     exit();
-// }
+if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
+    echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
+    exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $PublisherName = trim($_POST['PublisherName']);
