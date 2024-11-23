@@ -1,7 +1,11 @@
 <?php
 include_once("database/db.php");
 
-$sql = "s";
+$sqlBookCount = "select * from books where BookID = '$_GET[BookID]'";
+$qryBookCount = mysqli_query($conn, $sqlBookCount);
+$aryBookCount = mysqli_fetch_array($qryBookCount);
+
+$maxQuantity = $aryBookCount['Quantity'];
 
 
 if(isset($_POST['submit'])){
@@ -10,10 +14,13 @@ if(isset($_POST['submit'])){
     $UserId= $_SESSION['UserID'];
     $formDate= $_POST['fromDate'];
     $dueDate= $_POST['dueDate'];
+    $Quantity= $_POST['Quantity'];
+    
 
-    $sql = "insert into transactions (BookID, UserID, BorrowDate, DueDate, Status) Values ('$bookID','$UserId','$formDate','$dueDate','PENDING')";
+    $sql = "insert into transactions (BookID, Quantity,UserID, BorrowDate, DueDate, Status) Values ('$bookID',$Quantity,'$UserId','$formDate','$dueDate','PENDING')";
     if($qry = mysqli_query($conn, $sql)){
         echo "<script>alert('request borrow successful');</script>";
+        
     }else{
         echo "<script>alert('request borrow failed. Please try again.');</script>";
     }  
@@ -71,6 +78,12 @@ if(isset($_POST['submit'])){
                                         <label for="dueDate">due date</label>
                                         <input type="date" id="dueDate" name="dueDate" class="form-control">
                                     </div>
+                                    
+
+                                    <div class="form-group">
+                                        <label for="dueDate">Quantity</label>
+                                        <input type="number" id="Quantity" name="Quantity" class="form-control" value="1" min="1" max="<?=$maxQuantity?>">
+                                    </div>
 
                                     <div class="form-group">
                                         <div class="row">
@@ -78,7 +91,7 @@ if(isset($_POST['submit'])){
                                                 <button type="submit" name= "submit"class="btn btn-primary btn-block">Create</button>
                                             </div>
                                             <div class="col-xs-6">
-                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='borrow_list.php'">Go Back</button>
+                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='index.php'">Go Back</button>
                                             </div>
                                         </div>
                                     </div>

@@ -1,6 +1,12 @@
 <?php 
 include_once('database/db.php');
-$sql= "select * from transactions";
+
+if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== '1') {
+    echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
+    exit();
+}
+
+$sql= "select t.*,concat(FirstName, LastName) as FullName, b.Title from transactions as t left join users as u on t.UserID = u.UserID left join books as b on b.BookID = t.BookID";
 $qry = mysqli_query($conn, $sql);
 ?>
 
@@ -26,50 +32,51 @@ $qry = mysqli_query($conn, $sql);
             <table class="table table-striped table-bordered table-hover ">
                 <thead class="table-dark">
                     <th>transaction id</th>
-                    <th>book id</th>
-                    <th>user id</th>
+                    <th>book title</th>
+                    <th>borrower name</th>
                     <th>borrow date</th>
                     <th>return date</th>
                     <th>due date</th>
                     <th>status</th>
+                    <th>borrow quantity</th>
                     <th>action</th>
                 </thead>
                 <tbody>
                 <?php while($fetch= mysqli_fetch_array($qry)){?>
                     <tr id="row-<?=$fetch['TransactionID']?>">
-                    <td><?=$fetch['TransactionID']?></td>
-                    <td><?=$fetch['BookID']?></td>
-                    <td><?=$fetch['UserID']?></td>
-                    <td><?=$fetch['BorrowDate']?></td>
-                    <td><?=$fetch['ReturnDate']?></td>
-                    <td><?=$fetch['DueDate']?></td>
-                    <td><?=$fetch['Status']?></td>
-                    <!--<td><button class="form-control btn btn-primary" onclick="updateStatus()">approve</button></td>-->
-                        
-                    <td>
-                        <?php if($fetch['Status'] == 'PENDING'){ ?>
-                            <div class='row'>
-                                <div class='col'>
-                                    <button class="form-control btn btn-success" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'APPROVE',this)">Approve</button>
-                                </div> 
-                                <div class='col'>
-                                    <button class="form-control btn btn-danger" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'DENIED',this)">Denied</button>
+                        <td><?=$fetch['TransactionID']?></td>
+                        <td><?=$fetch['Title']?></td>
+                        <td><?=$fetch['FullName']?></td>
+                        <td><?=$fetch['BorrowDate']?></td>
+                        <td><?=$fetch['ReturnDate']?></td>
+                        <td><?=$fetch['DueDate']?></td>
+                        <td><?=$fetch['Status']?></td>
+                        <td><?=$fetch['Quantity']?></td>
+                        <td>
+                            <?php if($fetch['Status'] == 'PENDING'){ ?>
+                                <div class='row'>
+                                    <div class='col'>
+                                        <button class="form-control btn btn-success" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'APPROVE',this)">Approve</button>
+                                    </div> 
+                                    <div class='col'>
+                                        <button class="form-control btn btn-danger" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'DENIED',this)">Denied</button>
+                                    </div>
                                 </div>
-                            </div>
-                        <?php }else{ ?>
-                            <div class='row'>
-                            <?php if($fetch['Status'] == 'APPROVE'){ ?>
+                            <?php }else{ ?>
+                                <div class='row'>
+                                <?php if($fetch['Status'] == 'APPROVE'){ ?>
+                                    <div class='col'>
+                                        <button class="form-control btn btn-primary" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'RETURNED',this)">Return</button>
+                                    </div>
+                                <?php } ?>
+                                <?php if($fetch['Status'] !== 'RETURNED'){ ?>
                                 <div class='col'>
-                                    <button class="form-control btn btn-success" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'RETURNED',this)">return</button>
+                                    <button class="form-control btn btn-danger" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'PENDING',this)">Undo</button>
+                                </div>
+                                <?php } ?>
                                 </div>
                             <?php } ?>
-                            <div class='col'>
-                                <button class="form-control btn btn-primary" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'PENDING',this)">Undo</button>
-                            </div>
-                            </div>
-                        <?php } ?>
-                    </td>
-                       
+                        </td>
                     </tr>
                     <?php }?>
                 </tbody>
@@ -87,16 +94,26 @@ $qry = mysqli_query($conn, $sql);
 </html>
 <script>
     function updateStatus(transactionID, approvalStatus ,button) {
-        const xhttp = new XMLHttpRequest();
 
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                // Update the specific row's status
-                document.getElementById("row-" + transactionID).innerHTML = this.responseText;
-            }
-        };
+        if(approvalStatus == "RETURNED"){
+            $extraMsg = " ,you can not undo the changes";
+        }else{
+            $extraMsg = "";
+        }
 
-        xhttp.open("GET", `ajax.php?transactionID=${transactionID}&status=${approvalStatus}`, true);
-        xhttp.send();
+        $msg = "are you sure you want to change this borrow status to "+ approvalStatus + $extraMsg;
+        if (confirm($msg) == true) {
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Update the specific row's status
+                    document.getElementById("row-" + transactionID).innerHTML = this.responseText;
+                }
+            };
+
+            xhttp.open("GET", `ajax.php?transactionID=${transactionID}&status=${approvalStatus}`, true);
+            xhttp.send();
+        }
     }
 </script>

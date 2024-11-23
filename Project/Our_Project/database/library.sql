@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 23, 2024 at 03:18 AM
+-- Generation Time: Nov 23, 2024 at 10:37 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.2
 
@@ -66,7 +66,7 @@ CREATE TABLE `books` (
 --
 
 INSERT INTO `books` (`BookID`, `Title`, `AuthorID`, `GenreID`, `PublisherID`, `PublishedYear`, `Quantity`, `Image`, `Description`) VALUES
-(13, 'askdlfjasldkf', '1', '2', '2', '2024-11-16', 5, 'db_image/673e2c7557d2f.jpg', ''),
+(13, 'askdlfjasldkf', '1', '2', '2', '2024-11-16', 4, 'db_image/673e2c7557d2f.jpg', ''),
 (14, 'wqdefsrgdfth', '2', '2', '1', '2024-11-08', 6, 'db_image/673e2d5740c05.png', 'wdefsdgrhn');
 
 -- --------------------------------------------------------
@@ -138,6 +138,7 @@ INSERT INTO `publishers` (`PublisherID`, `PublisherName`, `Address`, `Phone`, `I
 CREATE TABLE `transactions` (
   `TransactionID` int(11) NOT NULL,
   `BookID` int(11) DEFAULT NULL,
+  `Quantity` varchar(50) NOT NULL,
   `UserID` int(11) DEFAULT NULL,
   `BorrowDate` date NOT NULL,
   `ReturnDate` date DEFAULT NULL,
@@ -149,9 +150,11 @@ CREATE TABLE `transactions` (
 -- Dumping data for table `transactions`
 --
 
-INSERT INTO `transactions` (`TransactionID`, `BookID`, `UserID`, `BorrowDate`, `ReturnDate`, `DueDate`, `Status`) VALUES
-(4, 13, 15, '2024-11-23', '2024-11-23', '2024-11-30', 'RETURNED'),
-(5, 14, 15, '2024-11-23', '2024-11-23', '2024-11-30', 'RETURNED');
+INSERT INTO `transactions` (`TransactionID`, `BookID`, `Quantity`, `UserID`, `BorrowDate`, `ReturnDate`, `DueDate`, `Status`) VALUES
+(4, 13, '1', 15, '2024-11-23', '2024-11-23', '2024-11-30', 'RETURNED'),
+(5, 14, '1', 15, '2024-11-23', '2024-11-23', '2024-11-30', 'RETURNED'),
+(6, 13, '1', 15, '2024-11-23', '2024-11-23', '2024-11-30', 'RETURNED'),
+(7, 13, '2', 15, '2024-11-23', NULL, '2024-11-30', 'APPROVE');
 
 -- --------------------------------------------------------
 
@@ -267,7 +270,7 @@ ALTER TABLE `publishers`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `TransactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `TransactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
