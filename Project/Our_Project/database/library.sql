@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 23, 2024 at 12:52 AM
+-- Generation Time: Nov 23, 2024 at 03:18 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.2
 
@@ -150,7 +150,8 @@ CREATE TABLE `transactions` (
 --
 
 INSERT INTO `transactions` (`TransactionID`, `BookID`, `UserID`, `BorrowDate`, `ReturnDate`, `DueDate`, `Status`) VALUES
-(4, 13, 15, '2024-11-23', NULL, '2024-11-30', 'PENDING');
+(4, 13, 15, '2024-11-23', '2024-11-23', '2024-11-30', 'RETURNED'),
+(5, 14, 15, '2024-11-23', '2024-11-23', '2024-11-30', 'RETURNED');
 
 -- --------------------------------------------------------
 
@@ -266,7 +267,7 @@ ALTER TABLE `publishers`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `TransactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `TransactionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
