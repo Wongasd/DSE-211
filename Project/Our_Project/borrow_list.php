@@ -40,7 +40,7 @@ $qry = mysqli_query($conn, $sql);
                     <th>due date</th>
                     <th>status</th>
                     <th>borrow quantity</th>
-                    <?php if ($_SESSION['Permission'] !== 'user') { ?>
+                    <?php if ($_SESSION['Permission'] !== '2') { ?>
                     <th>action</th>
                     <?php } ?>
                 </thead>
@@ -55,7 +55,7 @@ $qry = mysqli_query($conn, $sql);
                         <td><?=$fetch['DueDate']?></td>
                         <td><?=$fetch['Status']?></td>
                         <td><?=$fetch['Quantity']?></td>
-                        <?php if ($_SESSION['Permission'] !== 'user') { ?>
+                        <?php if ($_SESSION['Permission'] !== '2') { ?>
                             <td>
                                 <?php if($fetch['Status'] == 'PENDING'){ ?>
                                     <div class='row'>

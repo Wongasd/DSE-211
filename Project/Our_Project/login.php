@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if(password_verify($Password, $hashedPassword)){
 
             $_SESSION['UserID'] = $row['UserID'];
-            $_SESSION['Permission'] = $row['PermissionName'];
+            $_SESSION['Permission'] = $row['Permission'];
 
             echo "<script>alert('Login Success');window.location.href='index.php';</script>";
         }else{

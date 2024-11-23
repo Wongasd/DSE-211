@@ -19,7 +19,7 @@ if(isset($_POST['submit'])){
 
     $sql = "insert into transactions (BookID, Quantity,UserID, BorrowDate, DueDate, Status) Values ('$bookID',$Quantity,'$UserId','$formDate','$dueDate','PENDING')";
     if($qry = mysqli_query($conn, $sql)){
-        echo "<script>alert('request borrow successful');</script>";
+        echo "<script>alert('request borrow successful');window.location.href='index.php';</script>";
         
     }else{
         echo "<script>alert('request borrow failed. Please try again.');</script>";
