@@ -1,37 +1,33 @@
 <?php 
 include_once("database/db.php");
 
-if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
-    echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
-    exit();
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $GenreName = trim($_POST['GenreName']);
 
-    // Check if the genre already exists
-    $qry = "SELECT * FROM genres WHERE GenreName = ?";
-    $stmt = $conn->prepare($qry);
-    $stmt->bind_param("s", $GenreName);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $Email = trim($_POST['Email']);
+    $Password = trim($_POST['Password']);
 
-    if ($result->num_rows > 0) {
-        echo "<script>alert('This genre already exists in the database');</script>";
-    } else {
-        // Insert new genre
-        $query = "INSERT INTO genres (GenreName) VALUES (?)";
-        $stmtInsert = $conn->prepare($query);
-        $stmtInsert->bind_param("s", $GenreName);
+    $query = "SELECT * FROM users WHERE Email = '".$Email."'";
+    $sql = mysqli_query($conn,$query);
+    $rows = mysqli_num_rows($sql);
+	
+    if($rows == 1){
+        $row = mysqli_fetch_array($sql, MYSQLI_ASSOC);
 
-        if ($stmtInsert->execute()) {
-            echo "<script>alert('Genre added successfully'); window.location.href='index.php';</script>";
-        } else {
-            echo "<script>alert('Error adding genre. Please try again.');</script>";
+        $hashedPassword = $row['Password'];
+
+        if(password_verify($Password, $hashedPassword)){
+
+            $_SESSION['UserID'] = $row['UserID'];
+            $_SESSION['Permission'] = $row['Permission'];
+
+            echo "<script>alert('Login Success');window.location.href='index.php';</script>";
+        }else{
+            echo "<script>alert('Invalid Password');</script>";
         }
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -41,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add Genre</title>
+    <title>Sign Up Your Account Here!</title>
 
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -52,19 +48,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="shortcut icon" href="assets/ico/favicon.png">
 
     <style>
-        label {
-            color: white; /* Set label text color to white */
-        }
-    </style>
+            label {
+                color: white; /* Set label text color to white */
+            }
+        </style>
 </head>
 
 <body>
+
     <div class="top-content">
         <div class="inner-bg">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-8 col-sm-offset-2 text">
-                        <h1>Add Genre</h1>
+                        <h1>Sign Up Now!</h1>
                     </div>
                 </div>
 
@@ -72,21 +69,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="form-box">
                             <div class="form-bottom">
-                                <form role="form" action="add_genre.php" method="POST" class="registration-form">
+                                <form role="form" action="login.php" method="POST" class="registration-form">
+
                                     <div class="form-group">
-                                        <label for="GenreName">Genre Name :</label>
-                                        <input type="text" name="GenreName" placeholder="Enter genre name..." class="form-control" id="GenreName" required>
+                                        <label for="Email">Email</label>
+                                        <input type="text" name="Email" placeholder="Enter Your Email..." class="form-email form-control" id="Email" required>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="Password">Password</label>
+                                        <input type="text" name="Password" placeholder="Enter Your Password..." class="form-password form-control" id="Password" required>
+                                    </div>
+                                    
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-6">
-                                                <button type="submit" class="btn btn-primary btn-block">Create</button>
+                                                <button type="submit" class="btn btn-primary btn-block">Login</button>
                                             </div>
                                             <div class="col-xs-6">
-                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='index.php'">Go back</button>
+                                                <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='register.php'">Sign up</button>
                                             </div>
                                         </div>
                                     </div>
+
                                 </form>
                             </div>
                         </div>
@@ -100,6 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/jquery.backstretch.min.js"></script>
     <script src="assets/js/scripts.js"></script>
+
 </body>
 
 </html>

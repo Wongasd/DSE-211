@@ -7,7 +7,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_destroy();
 
     // Redirect to login page or homepage
-    echo "<script>alert('You have successfully logged out'); window.location.href='login.php';</script>";
+    echo "<script>alert('You have successfully logged out'); window.location.href='index.php';</script>";
     exit();
 }
 
