@@ -36,6 +36,7 @@ $qry = mysqli_query($conn, $sql);
                 </thead>
                 <tbody>
                 <?php while($fetch= mysqli_fetch_array($qry)){?>
+                    <tr id="row-<?=$fetch['TransactionID']?>">
                     <td><?=$fetch['TransactionID']?></td>
                     <td><?=$fetch['BookID']?></td>
                     <td><?=$fetch['UserID']?></td>
@@ -44,9 +45,32 @@ $qry = mysqli_query($conn, $sql);
                     <td><?=$fetch['DueDate']?></td>
                     <td><?=$fetch['Status']?></td>
                     <!--<td><button class="form-control btn btn-primary" onclick="updateStatus()">approve</button></td>-->
-                        <?php if($fetch['Status']!=="PENDING"){ ?>
-                        <?php } ?>
                         
+                    <td>
+                        <?php if($fetch['Status'] == 'PENDING'){ ?>
+                            <div class='row'>
+                                <div class='col'>
+                                    <button class="form-control btn btn-success" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'APPROVE',this)">Approve</button>
+                                </div> 
+                                <div class='col'>
+                                    <button class="form-control btn btn-danger" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'DENIED',this)">Denied</button>
+                                </div>
+                            </div>
+                        <?php }else{ ?>
+                            <div class='row'>
+                            <?php if($fetch['Status'] == 'APPROVE'){ ?>
+                                <div class='col'>
+                                    <button class="form-control btn btn-success" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'RETURNED',this)">return</button>
+                                </div>
+                            <?php } ?>
+                            <div class='col'>
+                                <button class="form-control btn btn-primary" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'PENDING',this)">Undo</button>
+                            </div>
+                            </div>
+                        <?php } ?>
+                    </td>
+                       
+                    </tr>
                     <?php }?>
                 </tbody>
             </table>
@@ -62,15 +86,17 @@ $qry = mysqli_query($conn, $sql);
 
 </html>
 <script>
-    function updateStatus() {
+    function updateStatus(transactionID, approvalStatus ,button) {
         const xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
+
+        xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("demo").innerHTML =
-            this.responseText;
+                // Update the specific row's status
+                document.getElementById("row-" + transactionID).innerHTML = this.responseText;
             }
         };
-        xhttp.open("GET", "ajax_info.txt");
+
+        xhttp.open("GET", `ajax.php?transactionID=${transactionID}&status=${approvalStatus}`, true);
         xhttp.send();
     }
 </script>
