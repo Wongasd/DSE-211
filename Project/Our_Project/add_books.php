@@ -2,7 +2,7 @@
 // Include the database connection file
 include_once("database/db.php");
 
-if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== 'admin') {
+if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== '1') {
     echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
     exit();
 }
