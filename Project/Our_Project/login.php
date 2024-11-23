@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $Email = trim($_POST['Email']);
     $Password = trim($_POST['Password']);
 
-    $query = "SELECT * FROM users WHERE Email = '".$Email."'";
+    $query = "SELECT u.*,p.PermissionName FROM `users` as u inner join permission as p on u.Permission = p.PermissionID WHERE Email = '".$Email."'";
     $sql = mysqli_query($conn,$query);
     $rows = mysqli_num_rows($sql);
 	
@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if(password_verify($Password, $hashedPassword)){
 
             $_SESSION['UserID'] = $row['UserID'];
-            $_SESSION['Permission'] = $row['Permission'];
+            $_SESSION['Permission'] = $row['PermissionName'];
 
             echo "<script>alert('Login Success');window.location.href='index.php';</script>";
         }else{

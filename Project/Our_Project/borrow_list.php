@@ -1,12 +1,13 @@
 <?php 
 include_once('database/db.php');
 
-if (!isset($_SESSION['Permission']) || $_SESSION['Permission'] !== '1') {
-    echo "<script>alert('Access denied. Admins only.'); window.location.href='index.php';</script>";
-    exit();
+if ($_SESSION['Permission'] == 'user') {
+    $where = " where t.UserID = '$_SESSION[UserID]'";
+}else{
+    $where ="";
 }
 
-$sql= "select t.*,concat(FirstName, LastName) as FullName, b.Title from transactions as t left join users as u on t.UserID = u.UserID left join books as b on b.BookID = t.BookID";
+$sql= "select t.*,concat(FirstName, LastName) as FullName, b.Title from transactions as t left join users as u on t.UserID = u.UserID left join books as b on b.BookID = t.BookID".$where;
 $qry = mysqli_query($conn, $sql);
 ?>
 
@@ -39,7 +40,9 @@ $qry = mysqli_query($conn, $sql);
                     <th>due date</th>
                     <th>status</th>
                     <th>borrow quantity</th>
+                    <?php if ($_SESSION['Permission'] !== 'user') { ?>
                     <th>action</th>
+                    <?php } ?>
                 </thead>
                 <tbody>
                 <?php while($fetch= mysqli_fetch_array($qry)){?>
@@ -52,31 +55,33 @@ $qry = mysqli_query($conn, $sql);
                         <td><?=$fetch['DueDate']?></td>
                         <td><?=$fetch['Status']?></td>
                         <td><?=$fetch['Quantity']?></td>
-                        <td>
-                            <?php if($fetch['Status'] == 'PENDING'){ ?>
-                                <div class='row'>
-                                    <div class='col'>
-                                        <button class="form-control btn btn-success" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'APPROVE',this)">Approve</button>
-                                    </div> 
-                                    <div class='col'>
-                                        <button class="form-control btn btn-danger" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'DENIED',this)">Denied</button>
+                        <?php if ($_SESSION['Permission'] !== 'user') { ?>
+                            <td>
+                                <?php if($fetch['Status'] == 'PENDING'){ ?>
+                                    <div class='row'>
+                                        <div class='col'>
+                                            <button class="form-control btn btn-success" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'APPROVE',this)">Approve</button>
+                                        </div> 
+                                        <div class='col'>
+                                            <button class="form-control btn btn-danger" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'DENIED',this)">Denied</button>
+                                        </div>
                                     </div>
-                                </div>
-                            <?php }else{ ?>
-                                <div class='row'>
-                                <?php if($fetch['Status'] == 'APPROVE'){ ?>
+                                <?php }else{ ?>
+                                    <div class='row'>
+                                    <?php if($fetch['Status'] == 'APPROVE'){ ?>
+                                        <div class='col'>
+                                            <button class="form-control btn btn-primary" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'RETURNED',this)">Return</button>
+                                        </div>
+                                    <?php } ?>
+                                    <?php if($fetch['Status'] !== 'RETURNED'){ ?>
                                     <div class='col'>
-                                        <button class="form-control btn btn-primary" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'RETURNED',this)">Return</button>
+                                        <button class="form-control btn btn-danger" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'PENDING',this)">Undo</button>
+                                    </div>
+                                    <?php } ?>
                                     </div>
                                 <?php } ?>
-                                <?php if($fetch['Status'] !== 'RETURNED'){ ?>
-                                <div class='col'>
-                                    <button class="form-control btn btn-danger" onclick="updateStatus(<?=$fetch['TransactionID']?>, 'PENDING',this)">Undo</button>
-                                </div>
-                                <?php } ?>
-                                </div>
-                            <?php } ?>
-                        </td>
+                            </td>
+                        <?php } ?>
                     </tr>
                     <?php }?>
                 </tbody>

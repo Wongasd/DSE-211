@@ -76,14 +76,14 @@ $Permission = isset($_SESSION['Permission']) ? $_SESSION['Permission'] : '';
 											<li class="active"><a href="index.php">Home</a></li>							
 											<li><a href="all_books.php">All Books</a></li>	
 											<li><a href="all_authors.php">All Authors</a></li>	
-											<li><a href="all_publishers.php">All Publishers</a></li>	
-											<?php if ($Permission == '1'){ ?>
+											<li><a href="all_publishers.php">All Publishers</a></li>
+											<li><a href="borrow_list.php">Borrow History</a></li>			
+											<?php if ($Permission == 'admin'){ ?>
 											<li><a href="all_users.php">All Users</a></li>	
 											<li><a href="add_publisher.php">Add Publishers</a></li>	
 											<li><a href="add_author.php">Add Authors</a></li>
 											<li><a href="add_users.php">Add Users</a></li>
 											<li><a href="add_books.php">Add Books</a></li>
-											<li><a href="borrow_list.php">Borrow History</a></li>		
 											<li><a href="add_genre.php">Add Genre</a></li>	
 											<?php }elseif($Permission == '3'){ ?>
 											<li><a href="add_books.php">Add Books</a></li>
