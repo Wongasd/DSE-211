@@ -50,15 +50,15 @@ $resultPublishers = mysqli_query($conn, $queryPublishers);
                             <p class="card-text">Address: <?php echo htmlspecialchars($publisher['Address']); ?></p>
                             <p class="card-text">Phone: <?php echo htmlspecialchars($publisher['Phone']); ?></p>
 
-                            <?php if ($_SESSION["Permission"] == '1') { ?>
+                            <?php if ($Permission == '1') { ?>
 										<!-- If the user is an admin, the button redirects to the edit page -->
 										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='edit_publisher.php?PublisherID=<?=$publisher['PublisherID']?>'">Edit</button>
                                         <button type="button" class="btn btn-danger" data-product-tile="add-to-cart" 
                                         onclick="confirmDeletion('<?=$publisher['PublisherID']?>')">Delete</button>
-									<?php } elseif ($_SESSION["Permission"] == '2') { ?>
+									<?php } elseif ($Permission == '2') { ?>
 										<!-- If the user is not an admin, the button redirects to the borrow page -->
 										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='publisher_details.php?PublisherID=<?=$publisher['PublisherID']?>'">View</button>
-									<?php } elseif($_SESSION['Permission'] == '3') { ?>
+									<?php } elseif($Permission == '3') { ?>
 										<button type="button" class="btn btn-primary" data-product-tile="add-to-cart" onclick="window.location.href='edit_publisher.php?PublisherID=<?=$publisher['PublisherID']?>'">Edit</button>
 									<?php } else { ?>
                                         <!-- If the user is not logged in or has no permission, show an alert and redirect to login -->

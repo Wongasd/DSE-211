@@ -14,6 +14,8 @@ $resultBooks = mysqli_query($conn, $queryBooks);
 $queryBooks2 = "SELECT * FROM books ORDER BY BookID ASC LIMIT 3"; // Adjust table and column names as needed
 $resultBooks2 = mysqli_query($conn, $queryBooks2);
 
+$Permission = isset($_SESSION['Permission']) ? $_SESSION['Permission'] : '';
+
 ?>
 
 <!DOCTYPE html>
@@ -126,10 +128,10 @@ $resultBooks2 = mysqli_query($conn, $queryBooks2);
 											<figure class="product-style">
 												<img src="<?php echo $bookImage; ?>" alt="Book Cover" class="product-item">
 
-												<?php if ($_SESSION["Permission"] == '1') { ?>
+												<?php if ($Permission == '1') { ?>
 													<!-- If the user is an admin, the button redirects to the edit page -->
 													<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='edit_book.php?BookID=<?=$book['BookID']?>'">Edit</button>
-												<?php } elseif ($_SESSION["Permission"] == '2') { ?>
+												<?php } elseif ($Permission == '2') { ?>
 													<!-- If the user is not an admin, the button redirects to the borrow page -->
 													<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='borrow.php?BookID=<?=$book['BookID']?>'">Borrow</button>
 												<?php } else { ?>
